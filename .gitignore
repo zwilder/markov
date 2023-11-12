@@ -1,0 +1,9 @@
+*.un~
+*.d
+*.o
+*.bak
+*.swp
+*.bin
+tags
+scratch/*
+Markov
