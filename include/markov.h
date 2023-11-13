@@ -69,6 +69,8 @@ void ht_collision(HTable *table, unsigned long index, HTNode *item);
 void ht_insert(HTable *table, char *key, CList *values);
 CList* ht_search(HTable *table, char *key);
 void ht_delete(HTable *table, char *key);
+void ht_print(HTable *table);
+void ht_print_item(HTable *table, char *key);
 
 // HTList functions
 HTList* htlist_insert(HTList *headref, HTNode *item);
@@ -77,5 +79,6 @@ HTNode* htlist_pop(HTList **headref);
 // CList functions
 void clist_push(CList **headref, char c);
 void clist_print(CList *headref);
+void clist_bracketprint(CList *headref);
 
 #endif //MARKOV_H

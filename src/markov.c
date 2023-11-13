@@ -160,15 +160,14 @@ void ht_insert(HTable *table, char *key, CList *values) {
         /* Key exists at hash */
         if(strcmp(cur->key, key) == 0) {
             /* Same key, update value */
-            //strcpy(table->items[index]->values, values);
-            /* Need to add each value in values to the values in
-             * table->items[index]->values */
-            vlist = table->items[index]->values;
+            vlist = cur->values;
             ctmp = values;
             while(ctmp) {
                 clist_push(&vlist, ctmp->ch);
                 ctmp = ctmp->next;
             }
+            cur->values = vlist;
+            destroy_htnode(item);
         } else {
             /* Different key, handle collision */
             ht_collision(table, index, item);
@@ -249,6 +248,39 @@ void ht_delete(HTable *table, char *key) {
     }
 }
 
+void ht_print(HTable *table) {
+    int i = 0;
+    HTList *head = NULL;
+    printf("\n\t********************\n");
+    printf("\tHashTable\n\t********************\n");
+    for(i = 0; i < table->size; i++) {
+        if(table->items[i]) {
+            printf("Index: %d | Key: %s | Values: ",
+                    i, table->items[i]->key);
+            clist_bracketprint(table->items[i]->values);
+            if(table->ofbuckets[i]) {
+                printf("\t=> Overflow Bucket =>\n");
+                head = table->ofbuckets[i];
+                while(head) {
+                    printf("\tKey: %s | Values: ", head->data->key);
+                    clist_bracketprint(head->data->values);
+                    head = head->next;
+                }
+            }
+        }
+    }
+    printf("\t********************\n\n");
+}
+
+void ht_print_item(HTable *table, char *key) {
+    CList *val = ht_search(table, key);
+    if(!val) {
+        printf("Key: %s does not exist.\n", key);
+    } else {
+        printf("Key: %s | Value: ", key);
+        clist_bracketprint(val);
+    }
+}
 /*****
  * HTList functions
  *****/
@@ -308,5 +340,19 @@ void clist_print(CList *headref) {
         printf("\t%d) %c\n", i, tmp->ch);
         i++;
         tmp = tmp->next;
+    }
+}
+
+void clist_bracketprint(CList *headref) {
+    CList *tmp = headref;
+    printf("[");
+    while(tmp) {
+        printf("\'%c\'",tmp->ch);
+        tmp = tmp->next;
+        if(tmp) {
+            printf(",");
+        } else {
+            printf("]\n");
+        }
     }
 }
