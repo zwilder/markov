@@ -7,6 +7,7 @@
 #include <ctype.h>
 
 #include <mt19937.h>
+#include <slist.h>
 
 /*****
  * Constants
@@ -46,7 +47,7 @@ struct CList {
 };
 
 /*****
- * Function declarations
+ * markov_structures.c
  *****/
 // Structure creation
 HTNode* create_htnode(char *key, CList *values);
@@ -80,5 +81,13 @@ HTNode* htlist_pop(HTList **headref);
 void clist_push(CList **headref, char c);
 void clist_print(CList *headref);
 void clist_bracketprint(CList *headref);
+
+/*****
+ * markov_gen.c
+ *****/
+// Markov chain generator functions
+HTable* markov_generate_ht(char *fname);
+
+// Random name functions
 
 #endif //MARKOV_H

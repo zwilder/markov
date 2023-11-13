@@ -1,4 +1,3 @@
-# 4019 male names from SSA database, in decreasing frequency, 1937
 Robert James John William Richard Charles Donald David Thomas George Ronald
 Joseph Edward Kenneth Paul Larry Jerry Frank Raymond Gerald Harold Billy Jack
 Bobby Joe Walter Michael Carl Gary Henry Arthur Willie Eugene Ralph Fred Roger
