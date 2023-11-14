@@ -33,5 +33,9 @@ int main(int argc, char **argv) {
     destroy_htable(ht);
     */
 
+    HTable *ht = markov_generate_ht("data/mnames_100.txt");
+    ht_print(ht);
+    destroy_htable(ht);
+
     return 0;
 }

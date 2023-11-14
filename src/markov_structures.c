@@ -345,6 +345,10 @@ void clist_print(CList *headref) {
 
 void clist_bracketprint(CList *headref) {
     CList *tmp = headref;
+    if(!tmp) {
+        printf("\n");
+        return;
+    }
     printf("[");
     while(tmp) {
         printf("\'%c\'",tmp->ch);

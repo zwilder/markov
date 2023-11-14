@@ -13,7 +13,8 @@
  * Constants
  *****/
 enum {
-    CAPACITY = 50000 // Hash table size
+    KEYSZ    = 2,
+    CAPACITY = 50001 // Hash table size
 };
 
 /*****
@@ -87,6 +88,10 @@ void clist_bracketprint(CList *headref);
  *****/
 // Markov chain generator functions
 HTable* markov_generate_ht(char *fname);
+CList* markov_find_match(char key[2], SList *words);
+void string_to_lower(char *str);
+void slist_to_lower(SList *words);
+char markov_find_key_str(char *str, char key[2]);
 
 // Random name functions
 
