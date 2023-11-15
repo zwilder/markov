@@ -258,3 +258,49 @@ void slist_print(SList *head) {
     }
 }
 
+bool slist_delete(SList **s, char *str) {
+    /* Find string s in slist, and delete it, update the links accordingly. */
+    SList *tmp = (*s);
+    SList *prev = NULL;
+    while(tmp) {
+        if(strcmp(tmp->data, str) == 0) {
+            //Found match
+            if(prev) {
+                prev->next = tmp->next;
+            }
+            free(tmp->data);
+            free(tmp);
+            return true;
+        }
+        prev = tmp;
+        tmp = tmp->next;
+    }
+    // No match found
+    return false;
+}
+
+int slist_get_max(SList *s) {
+    /* Find longest string in SList, and return how many characters it has */
+    int i = 0;
+    SList *tmp = s;
+    while(tmp) {
+        if(tmp->length > i) {
+            i = tmp->length;
+        }
+        tmp = tmp->next;
+    }
+    return i;
+}
+
+int slist_get_min(SList *s) {
+    /* Find shortest string in SList, and return how many characters it has */
+    int i = slist_get_max(s);
+    SList *tmp = s;
+    while(tmp) {
+        if(tmp->length < i) {
+            i = tmp->length;
+        }
+        tmp = tmp->next;
+    }
+    return i;
+}

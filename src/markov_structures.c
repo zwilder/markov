@@ -29,6 +29,7 @@ HTNode* create_htnode(char *key, CList *values) {
     item->key = malloc(sizeof(char) * (strlen(key) + 1));
     item->values = values;
     strcpy(item->key,key);
+    item->nvalues = clist_count(values);
     return item;
 }
 
@@ -43,6 +44,10 @@ HTable* create_table(int size) {
         table->items[i] = NULL;
     } 
     table->ofbuckets = create_ofbuckets(table);
+    table->keys = NULL;
+    table->stkeys = NULL;
+    table->wmax = 0;
+    table->wmin = 0;
     return table;
 }
 
@@ -95,6 +100,8 @@ void destroy_htable(HTable *table) {
         }
     }
     destroy_ofbuckets(table);
+    destroy_slist(&(table->keys));
+    destroy_slist(&(table->stkeys));
     free(table->items);
     free(table);
 }
@@ -175,6 +182,12 @@ void ht_insert(HTable *table, char *key, CList *values) {
         }
         table->items[index] = item;
         table->count += 1;
+        // Update list of keys
+        if(!(table->keys)) {
+                table->keys = create_slist(key);
+        } else {
+            slist_push(&(table->keys), key); 
+        }
     } else {
         /* Key exists at hash */
         if(strcmp(cur->key, key) == 0) {
@@ -227,6 +240,7 @@ void ht_delete(HTable *table, char *key) {
         /* No collision chain, remove item set table index to NULL */
         table->items[index] = NULL;
         destroy_htnode(item);
+        slist_delete(&(table->keys),key); // Update key list
         table->count--;
         return;
     } else if (head) {

@@ -54,8 +54,17 @@ int main(int argc, char **argv) {
     */
 
     HTable *ht = markov_generate_ht("data/mnames_1000.txt");
+    int i = 0;
     //ht_print(ht);
-    generate_random_name(ht);
+    //printf("Longest word in dataset:%d. Shortest word in dataset: %d.\n",
+    //        ht->wmax, ht->wmin);
+    //printf("Keys:\n");
+    //slist_print(ht->keys);
+    //printf("Starter keys:\n");
+    //slist_print(ht->stkeys);
+    for(i = 0; i < 100; i++) {
+        generate_random_name(ht);
+    }
     destroy_htable(ht);
 
     return 0;

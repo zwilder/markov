@@ -45,8 +45,9 @@ typedef struct HTList HTList; // List of HTNodes (used for Overflow buckets)
 typedef struct CList CList; // List of characters
 
 struct HTNode {
-    char *key;
-    CList *values;
+    char *key;              // Key
+    CList *values;          // List of characters
+    int nvalues;            // Number of characters in CList
 };
 
 struct HTable {
@@ -55,6 +56,9 @@ struct HTable {
     int size;               // Hash table size
     int count;              // Items in hash table
     SList *keys;            // List of keys for random access
+    int wmax;               // Longest word that should be generated
+    int wmin;               // Shortest word that should be generated
+    SList *stkeys;          // List of keys at the beginning of words
 };
 
 struct HTList {
@@ -116,7 +120,7 @@ char markov_find_key_str(char *str, char key[2]);
 
 // Random name functions
 HTNode* ht_get_random_node(HTable *ht);
-char clist_get_random(CList *cl);
+char clist_get_random(CList *cl, int n);
 void generate_random_name(HTable *ht);
 
 #endif //MARKOV_H

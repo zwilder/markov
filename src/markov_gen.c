@@ -83,9 +83,21 @@ HTable* markov_generate_ht(char *fname) {
             if(key[1] == '\0') break;
             ht_insert(ht, key, markov_find_match(key, words));
         }
+        // Add first two letters of word to starter key list
+        key[0] = sit->data[0];
+        key[1] = sit->data[1];
+        if(!(ht->stkeys)) {
+            ht->stkeys = create_slist(key);
+        } else {
+            slist_push(&(ht->stkeys),key);
+        }
         sit = sit->next;
     }
 
+    // Set maximum/minimum word length
+    ht->wmax = slist_get_max(words);
+    ht->wmin = slist_get_min(words);
+    
     // Cleanup
     destroy_slist(&words);
     fclose(f);
@@ -95,9 +107,13 @@ HTable* markov_generate_ht(char *fname) {
 char markov_find_key_str(char *str, char *key) {
     char result = '\0';
     int i = 0;
-    for (i = 0; i < (strlen(str)-2); i++) {
+    for (i = 0; i < (strlen(str)-1); i++) {
         if((str[i] == key[0]) && (str[i+1] == key[1])) {
             result = str[i+2];
+            if(!result) {
+                //printf("Key \"%s\" found at end of \"%s\"\n",key,str);
+                result = '!';
+            }
             // Need to recursively call this function on the last part of the
             // string, str[i+3] to str[strlen(str)], to account for words that
             // have the key present more than once in it. TODO
@@ -133,6 +149,7 @@ CList* markov_find_match(char *key, SList *words) {
         c = markov_find_key_str(tmp->data,key);
         if(c) {
             //printf("\tSuccess, %c follows %s!\n",c,key);
+            if(c == '!') c = '\0';
             if (result) {
                 clist_push(&result,c);
             } else {
@@ -149,28 +166,43 @@ CList* markov_find_match(char *key, SList *words) {
  *****/
 HTNode* ht_get_random_node(HTable *ht) {
     HTNode *result = NULL;
+    /*
     int i = 0;
     while(!result) {
          i = mt_rand(0,ht->size);
         result = ht->items[i];
     }
     printf("HT Random node %d.\n",i);
+    */
+    int r = mt_rand(0,slist_count(ht->stkeys)-1);
+    int i = 0;
+    SList *key = ht->stkeys;
+    for(i = 0; i < r; i++) {
+        key = key->next;
+    }
+    if(key) {
+        result = ht->items[ht_hash(key->data)];
+    } else {
+        printf("Item %d not found in hash table keys! i = %d.\n", r,i);
+        slist_print(ht->keys);
+    }
+
     return result;
 }
 
-char clist_get_random(CList *cl) {
+char clist_get_random(CList *cl, int n) {
     char result = '\0';
-    int i = mt_rand(0, clist_count(cl));
+    if(!n) return result;
+    int i = mt_rand(0, n-1);
     int j = 0;
     CList *tmp = cl;
-    while(tmp) {
-        if(i == j) {
-            result = tmp->ch;
-            break;
-        }
+    for(j = 0; j < i; j++) {
         tmp = tmp->next;
-        j++;
     }
+    if(tmp) {
+        result = tmp->ch;
+    }
+    
     return result;
 }
 
@@ -185,24 +217,45 @@ void generate_random_name(HTable *ht) {
      * - List of not NULL values in HTable.
      */
     char name[100];
-    char key[2];
+    char key[3];
     char c;
-    strcpy(key,(ht_get_random_node(ht))->key);
-    printf("Starting with %s.\n",key);
-    name[0] = key[0];
+    int i = 0;
+    int length = mt_rand(ht->wmin, ht->wmax);
+    length = ht->wmax;
+    HTNode *tmp = ht_get_random_node(ht);
+    //strcpy(key,tmp->key);
+    key[0] = tmp->key[0];
+    key[1] = tmp->key[1];
+    key[2] = '\0';
+    //printf("Starting with %s.\n",key);
+    
+    name[0] = toupper(key[0]);
     name[1] = key[1];
-    c = clist_get_random(ht_search(ht, key));
-    printf("->Adding %c, %s\n",c,name);
-    name[2] = c;
-    name[3] = '\0';
+    name[2] = '\0';
+    while(strlen(name) <= ht->wmin) {
+        for(i = 2; i < length; i++) {
+            c = clist_get_random(tmp->values, tmp->nvalues);
+            if(!c || !tmp) {
+               name[i] = '\0';
+               break; 
+            }
+            name[i] = c;
+            key[0] = name[i-1];
+            key[1] = name[i];
+            //printf("->Key:%s\n",key);
+            tmp = ht->items[ht_hash(key)];
+        }
+    }
+    printf("%s\n",name);
     /*
-    key[0] = name[1];
-    key[1] = name[2];
-    name[3] = clist_get_random(ht_search(ht, key));
-    key[0] = name[2];
-    key[1] = name[3];
-    name[4] = clist_get_random(ht_search(ht, key));
-    name[5] = '\0';
-    printf("%s\n", name);
+    c = clist_get_random(tmp->values, tmp->nvalues);
+    if(c) {
+        name[2] = c;
+        name[3] = '\0';
+        printf("->Adding %c, %s\n",c,name);
+    } else {
+        name[2] = '\0';
+        printf("->%s is end.\n",name);
+    }
     */
 }
