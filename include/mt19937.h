@@ -46,6 +46,7 @@
 #include <stdlib.h> 
 #include <stdbool.h>
 #include <limits.h>
+#include <time.h>
 
 
 void init_genrand(unsigned long s);

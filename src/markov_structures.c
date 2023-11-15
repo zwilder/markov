@@ -379,3 +379,8 @@ void clist_bracketprint(CList *headref) {
         }
     }
 }
+
+int clist_count(CList *cl) {
+    if(!cl) return 0;
+    return (clist_count(cl->next) + 1);
+}

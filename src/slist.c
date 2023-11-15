@@ -27,7 +27,7 @@
  * length of the string. Portable outside of this project. 
  *******/
 
-SList* create_SList(char *s) {
+SList* create_slist(char *s) {
     /* Create a SList node, calculate the length of string s (don't forget the
      * \0 at the end!), store both the string and the length, and return the
      * node.
@@ -40,7 +40,7 @@ SList* create_SList(char *s) {
     return node;
 }
 
-SList* create_SList_blank(int strsize) {
+SList* create_slist_blank(int strsize) {
     /* Create a node and allocate the memory for the string, but don't assign
      * anything to the string yet */
     SList *node = malloc(sizeof(SList));
@@ -50,10 +50,10 @@ SList* create_SList_blank(int strsize) {
     return node;
 }
 
-void push_SList_blank(SList **head, int strsize) {
+void slist_push_blank(SList **head, int strsize) {
     /* Push a blank node onto the SList, reserving space for a string of strsize
      * length in the node */
-    SList *newNode = create_SList_blank(strsize);
+    SList *newNode = create_slist_blank(strsize);
     SList *tmp;
     if(!(*head)) {
         *head = newNode;
@@ -70,7 +70,7 @@ void push_SList_blank(SList **head, int strsize) {
     tmp->next = newNode;
 }
 
-void destroy_SList(SList **head) {
+void destroy_slist(SList **head) {
     /* Destroy a SList, looping through and freeing the memory for the stored
      * strings before freeing the memory used by the node. */
     SList *tmp = *head;
@@ -82,9 +82,9 @@ void destroy_SList(SList **head) {
     }
 }
 
-void push_SList(SList **head, char *s) {
+void slist_push(SList **head, char *s) {
     /* Push a new node onto the SList, containing string s */
-    SList *newNode = create_SList(s);
+    SList *newNode = create_slist(s);
     SList *tmp;
     if(!(*head)) {
         *head = newNode;
@@ -101,15 +101,15 @@ void push_SList(SList **head, char *s) {
     tmp->next = newNode;
 }
 
-int count_SList(SList *node) {
+int slist_count(SList *node) {
     /* Count and return the number of nodes in the SList */
     if(!node) {
         return 0;
     }
-    return count_SList(node->next) + 1;
+    return slist_count(node->next) + 1;
 }
 
-int count_chars_SList(SList *node, bool incSpace) {
+int slist_count_chars(SList *node, bool incSpace) {
     /* Count and return the number of characters in each string in SList,
      * optionally including the spaces */
     SList *tmp = node;
@@ -124,12 +124,12 @@ int count_chars_SList(SList *node, bool incSpace) {
     return result;
 }
 
-char* get_string_SList(SList *node) {
+char* slist_get_string(SList *node) {
     /* Combine all the strings in SList into one string, and then return it */
     if(!node) {
         return NULL;
     }
-    char *result = malloc((sizeof(char) * count_chars_SList(node, true)) + 1);
+    char *result = malloc((sizeof(char) * slist_count_chars(node, true)) + 1);
     SList *tmp = node;
     int i = 0;
     int letters = 0;
@@ -144,7 +144,7 @@ char* get_string_SList(SList *node) {
         letters++;
         tmp = tmp->next;
     }
-    for(i = 0; i < count_chars_SList(node,true); i++) {
+    for(i = 0; i < slist_count_chars(node,true); i++) {
         if(result[i] == '\0') {
             result[i] = ' ';
         }
@@ -153,7 +153,7 @@ char* get_string_SList(SList *node) {
     return result;
 }
 
-void add_SList(SList **to, SList **from) {
+void slist_add(SList **to, SList **from) {
     /* Add all words from "from" to back of "to" list */
     if(!(*to) || !(*from)) {
         return;
@@ -185,11 +185,11 @@ SList* split_string(char *s, char delim) {
     for(i = 0; s[i] != '\0'; i++) {
         /* move through string, looking at the letters */
         if((s[i] == delim) && (s[i+1] != delim)) {
-            push_SList_blank(&result, letters);
+            slist_push_blank(&result, letters);
             letters = 0;
         } else if (s[i+1] == '\0') {
             letters++;
-            push_SList_blank(&result, letters);
+            slist_push_blank(&result, letters);
         } else {
             letters++;
         }
@@ -215,7 +215,7 @@ SList* split_string(char *s, char delim) {
     return result;
 }
 
-SList* SList_linewrap(char *str, int w) {
+SList* slist_linewrap(char *str, int w) {
     /* Take a string and return a list of strings, where each string in the list
      * is under length w */
     SList *result = NULL;
@@ -232,7 +232,7 @@ SList* SList_linewrap(char *str, int w) {
          * greater than w, add it to the result list. If it isn't greater than
          * w, strcat it with the buffer */
         if((i + it->length) >= (w-1)) {
-            push_SList(&result, strbuf);
+            slist_push(&result, strbuf);
             i = it->length + 1;
             snprintf(strbuf,bufsz,"%s ",it->data);            
         } else {
@@ -242,8 +242,19 @@ SList* SList_linewrap(char *str, int w) {
         }
         it = it->next;
     }
-    push_SList(&result, strbuf);
+    slist_push(&result, strbuf);
     free(strbuf);
-    destroy_SList(&words);
+    destroy_slist(&words);
     return result;
 }
+
+void slist_print(SList *head) {
+    SList *tmp = head;
+    int i = 1;
+    while(tmp) {
+        printf("%d - %s\n",i, tmp->data);
+        tmp = tmp->next;
+        i++;
+    }
+}
+

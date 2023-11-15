@@ -20,6 +20,7 @@
 #include <markov.h>
 
 int main(int argc, char **argv) {
+    init_genrand(time(NULL));
     /* HTable test */
     /*
     CList *cl1, *cl2, *cl3, *cl4, *cl5;
@@ -52,8 +53,9 @@ int main(int argc, char **argv) {
     destroy_htable(ht);
     */
 
-    HTable *ht = markov_generate_ht("data/mnames_100.txt");
-    ht_print(ht);
+    HTable *ht = markov_generate_ht("data/mnames_1000.txt");
+    //ht_print(ht);
+    generate_random_name(ht);
     destroy_htable(ht);
 
     return 0;

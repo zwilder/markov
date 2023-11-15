@@ -35,16 +35,18 @@ typedef struct SList SList;
 /*******************
  * slist.c functions
  *******************/
-SList* create_SList(char *s);
-SList* create_SList_blank(int strsize);
-void push_SList_blank(SList **head, int strsize);
-void destroy_SList(SList **head);
-void push_SList(SList **head, char *s);
-int count_SList(SList *node);
-int count_chars_SList(SList *node, bool incSpace); 
-char* get_string_SList(SList *node);
-void add_SList(SList **to, SList **from); 
+SList* create_slist(char *s);
+SList* create_slist_blank(int strsize);
+void destroy_slist(SList **head);
+
+void slist_push_blank(SList **head, int strsize);
+void slist_push(SList **head, char *s);
+int slist_count(SList *node);
+int slist_count_chars(SList *node, bool incSpace); 
+char* slist_get_string(SList *node);
+void slist_add(SList **to, SList **from); 
 SList* split_string(char *s, char delim); 
-SList* SList_linewrap(char *str, int w);
+SList* slist_linewrap(char *str, int w);
+void slist_print(SList *head);
 
 #endif

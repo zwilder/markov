@@ -21,34 +21,16 @@
 /*****
  * Markov chain generator functions
  *****/
-void slist_print(SList *head) {
-    SList *tmp = head;
-    int i = 1;
-    while(tmp) {
-        printf("%d - %s\n",i, tmp->data);
-        tmp = tmp->next;
-        i++;
-    }
-}
-
 HTable* markov_generate_ht(char *fname) {
-    /* Okay, so this needs to do the following:
-     * - Open the dataset file
-     * - Read 2 characters in the file (a1a2)
-     * - Find every character that
-     *   follows those two characters, add it to a CList
-     * - Advance to next two characters (a2a3)
-     * - Repeat until EOF
-     *
-     * Maybe this would be a good place to use SList, read the file and store
-     * each name in a separate node?
-     * - Open the dataset file
-     * - Read and store strings in SList
-     * - Loop through SList, doing:
-     *   = take first two characters of string a1a2
-     *   = add next character to CList a3
-     *   = Look through rest of SList for any two characters that match
-     *   = Add the following character to CList
+    /* This function does the following:
+     * - Open the dataset file (fname)
+     * - Read and store strings in SList (words)
+     * - Loop through SList (words), doing:
+     *   = take first two characters of string (a1a2, "key")
+     *   = call markov_find_match(key, words)
+     *   markov_find_match(key, words) Does the following:
+     *   -= Look through SList (words) for any two characters that match key
+     *   -= Add the following character to CList
      *   = Add to ht: key a1a2, CList
      *   = Repeat with next two characters in string a2a3
      *   = Continue until one of the characters is '\0'.
@@ -71,7 +53,7 @@ HTable* markov_generate_ht(char *fname) {
         if((in == ' ') || (in == '\n')) {
             // End of word
             buf[i] = '\0';
-            push_SList(&words, buf);
+            slist_push(&words, buf);
             i = 0;
         } else { 
             buf[i] = in;
@@ -82,13 +64,13 @@ HTable* markov_generate_ht(char *fname) {
     if((buf[i] != '\0') && (i > 0)) {
         // Don't miss the last word in the dataset
         buf[i] = '\0';
-        push_SList(&words, buf);
+        slist_push(&words, buf);
     }
 
     // Loop through SList
     sit = words;
+    slist_to_lower(words);
     i = 0;
-    slist_print(words);
     while(sit) {
         if(strlen(sit->data) < 3) {
             sit = sit->next;
@@ -105,7 +87,7 @@ HTable* markov_generate_ht(char *fname) {
     }
 
     // Cleanup
-    destroy_SList(&words);
+    destroy_slist(&words);
     fclose(f);
     return ht;
 }
@@ -165,3 +147,62 @@ CList* markov_find_match(char *key, SList *words) {
 /*****
  * Random name functions
  *****/
+HTNode* ht_get_random_node(HTable *ht) {
+    HTNode *result = NULL;
+    int i = 0;
+    while(!result) {
+         i = mt_rand(0,ht->size);
+        result = ht->items[i];
+    }
+    printf("HT Random node %d.\n",i);
+    return result;
+}
+
+char clist_get_random(CList *cl) {
+    char result = '\0';
+    int i = mt_rand(0, clist_count(cl));
+    int j = 0;
+    CList *tmp = cl;
+    while(tmp) {
+        if(i == j) {
+            result = tmp->ch;
+            break;
+        }
+        tmp = tmp->next;
+        j++;
+    }
+    return result;
+}
+
+void generate_random_name(HTable *ht) {
+    /* Need to:
+     * - Choose random element from table to start name (key)
+     * - Choose random following character from that value CList
+     * - Look for next key made of key[1] and that character
+     * - Continue until name is a max length or there is no values in CList
+     *
+     * What we need:
+     * - List of not NULL values in HTable.
+     */
+    char name[100];
+    char key[2];
+    char c;
+    strcpy(key,(ht_get_random_node(ht))->key);
+    printf("Starting with %s.\n",key);
+    name[0] = key[0];
+    name[1] = key[1];
+    c = clist_get_random(ht_search(ht, key));
+    printf("->Adding %c, %s\n",c,name);
+    name[2] = c;
+    name[3] = '\0';
+    /*
+    key[0] = name[1];
+    key[1] = name[2];
+    name[3] = clist_get_random(ht_search(ht, key));
+    key[0] = name[2];
+    key[1] = name[3];
+    name[4] = clist_get_random(ht_search(ht, key));
+    name[5] = '\0';
+    printf("%s\n", name);
+    */
+}

@@ -32,8 +32,8 @@
  * Constants
  *****/
 enum {
-    KEYSZ    = 2,
-    CAPACITY = 50001 // Hash table size
+    KEYSZ    = 2,   // Unused, for now 
+    CAPACITY = 5001 // Hash table size
 };
 
 /*****
@@ -50,10 +50,11 @@ struct HTNode {
 };
 
 struct HTable {
-    HTNode **items;
-    HTList **ofbuckets;
-    int size;
-    int count;
+    HTNode **items;         // Items in table
+    HTList **ofbuckets;     // Overflow buckets
+    int size;               // Hash table size
+    int count;              // Items in hash table
+    SList *keys;            // List of keys for random access
 };
 
 struct HTList {
@@ -101,6 +102,7 @@ HTNode* htlist_pop(HTList **headref);
 void clist_push(CList **headref, char c);
 void clist_print(CList *headref);
 void clist_bracketprint(CList *headref);
+int clist_count(CList *cl);
 
 /*****
  * markov_gen.c
@@ -113,5 +115,8 @@ void slist_to_lower(SList *words);
 char markov_find_key_str(char *str, char key[2]);
 
 // Random name functions
+HTNode* ht_get_random_node(HTable *ht);
+char clist_get_random(CList *cl);
+void generate_random_name(HTable *ht);
 
 #endif //MARKOV_H
