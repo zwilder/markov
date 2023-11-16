@@ -32,8 +32,8 @@
  * Constants
  *****/
 enum {
-    KEYSZ    = 2,   // Unused, for now 
-    CAPACITY = 5001 // Hash table size
+    KEYSZ    = 3,    // Size of key used in chain
+    CAPACITY = 10003 // Hash table size
 };
 
 /*****
@@ -113,10 +113,10 @@ int clist_count(CList *cl);
  *****/
 // Markov chain generator functions
 HTable* markov_generate_ht(char *fname);
-CList* markov_find_match(char key[2], SList *words);
+CList* markov_find_match(char *key, SList *words);
 void string_to_lower(char *str);
 void slist_to_lower(SList *words);
-char markov_find_key_str(char *str, char key[2]);
+char markov_find_key_str(char *str, char *key);
 
 // Random name functions
 HTNode* ht_get_random_node(HTable *ht);

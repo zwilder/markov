@@ -44,8 +44,9 @@ HTable* markov_generate_ht(char *fname) {
     char buf[100];
     char in = fgetc(f);
     int i = 0;
-    char key[3];
-    key[2] = '\0';
+    int j = 0;
+    char key[KEYSZ+1];
+    key[KEYSZ] = '\0';
     buf[i] = '\0';
 
     // Read file, store words in SList
@@ -71,21 +72,24 @@ HTable* markov_generate_ht(char *fname) {
     sit = words;
     slist_to_lower(words);
     i = 0;
+    j = 0;
     while(sit) {
-        if(strlen(sit->data) < 3) {
+        if(strlen(sit->data) < KEYSZ) {
             sit = sit->next;
             continue;
         }
         for(i = 0; i < strlen(sit->data); i++)
         {
-            key[0] = sit->data[i];
-            key[1] = sit->data[i + 1];
-            if(key[1] == '\0') break;
+            for(j = 0; j < KEYSZ; j++) {
+                key[j] = sit->data[i+j];
+            }
+            if(key[KEYSZ-1] == '\0') break;
             ht_insert(ht, key, markov_find_match(key, words));
         }
-        // Add first two letters of word to starter key list
-        key[0] = sit->data[0];
-        key[1] = sit->data[1];
+        // Add first KEYSZ letters of word to starter key list
+        for(j = 0; j < KEYSZ; j++) {
+            key[j] = sit->data[j];
+        }
         if(!(ht->stkeys)) {
             ht->stkeys = create_slist(key);
         } else {
@@ -99,6 +103,8 @@ HTable* markov_generate_ht(char *fname) {
     ht->wmin = slist_get_min(words);
     
     // Cleanup
+    //printf("Words:\n");
+    //slist_print(words);
     destroy_slist(&words);
     fclose(f);
     return ht;
@@ -107,11 +113,32 @@ HTable* markov_generate_ht(char *fname) {
 char markov_find_key_str(char *str, char *key) {
     char result = '\0';
     int i = 0;
+    int j = 0;
+    char buf[KEYSZ+1];
+    buf[KEYSZ] = '\0';
+    //printf("Buf is \"%s\", str is \"%s\", key is \"%s\"\n",buf,str,key);
+    for(i = 0; i < strlen(str)-KEYSZ+1; i++) {
+        //printf("%d - ",i);
+        for(j = 0; j < KEYSZ; j++) {
+            buf[j] = str[i+j];
+        }
+        //printf("buf is \"%s\"",buf);
+        if(strcmp(buf,key) == 0) {
+            //printf(", matches key \"%s\"",key);
+            result = str[i+KEYSZ];
+            //printf(", result is \'%c\'\n", result);
+            if(!result) {
+                result = '!';
+            }
+            break;
+        }
+        //printf(" no match found.\n");
+    }
+    /*
     for (i = 0; i < (strlen(str)-1); i++) {
         if((str[i] == key[0]) && (str[i+1] == key[1])) {
             result = str[i+2];
             if(!result) {
-                //printf("Key \"%s\" found at end of \"%s\"\n",key,str);
                 result = '!';
             }
             // Need to recursively call this function on the last part of the
@@ -120,6 +147,7 @@ char markov_find_key_str(char *str, char *key) {
             break;
         }
     }
+    */
     return result;
 }
 
@@ -217,36 +245,49 @@ void generate_random_name(HTable *ht) {
      * - List of not NULL values in HTable.
      */
     char name[100];
-    char key[3];
+    char key[KEYSZ + 1];
     char c;
     int i = 0;
+    int j = 0;
+    int k = 0;
     int length = mt_rand(ht->wmin, ht->wmax);
     length = ht->wmax;
     HTNode *tmp = ht_get_random_node(ht);
-    //strcpy(key,tmp->key);
-    key[0] = tmp->key[0];
-    key[1] = tmp->key[1];
-    key[2] = '\0';
+    for(i = 0; i < KEYSZ; i++) {
+        key[i] = tmp->key[i];
+        name[i] = key[i];
+    }
+    key[KEYSZ] = '\0';
+    name[KEYSZ] = '\0';
+    name[0] = toupper(name[0]);
     //printf("Starting with %s.\n",key);
     
-    name[0] = toupper(key[0]);
-    name[1] = key[1];
-    name[2] = '\0';
-    while(strlen(name) <= ht->wmin) {
-        for(i = 2; i < length; i++) {
+    //while(strlen(name) <= ht->wmin) {
+        for(i = KEYSZ; i < length; i++) {
+            if(!tmp) {
+                name[i] = '\0';
+                break;
+            }
             c = clist_get_random(tmp->values, tmp->nvalues);
-            if(!c || !tmp) {
+            if(!c) {
                name[i] = '\0';
                break; 
             }
             name[i] = c;
-            key[0] = name[i-1];
-            key[1] = name[i];
+            // KEYSZ = 3
+            // k = KEYSZ - 1 - j
+            // key[0] = name[i-2] | j=0 k=2
+            // key[1] = name[i-1] | j=1 k=1
+            // key[2] = name[i]   | j=2 k=0
+            for(j = 0; j < KEYSZ; j++) {
+                k = KEYSZ - 1 - j;
+                key[j] = name[i-k];
+            } 
             //printf("->Key:%s\n",key);
             tmp = ht->items[ht_hash(key)];
         }
-    }
-    printf("%s\n",name);
+    //}
+    printf("%s ",name);
     /*
     c = clist_get_random(tmp->values, tmp->nvalues);
     if(c) {
