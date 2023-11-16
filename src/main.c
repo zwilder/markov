@@ -21,49 +21,25 @@
 
 int main(int argc, char **argv) {
     init_genrand(time(NULL));
-    /* HTable test */
-    /*
-    CList *cl1, *cl2, *cl3, *cl4, *cl5;
-    cl1 = create_clist_node('h');
-    clist_push(&cl1,'k');
-    cl2 = create_clist_node('c');
-    clist_push(&cl2,'k');
-    cl3 = create_clist_node('a');
-    cl4 = create_clist_node('c');
-    clist_push(&cl4,'l');
-    clist_push(&cl4,'n');
-    cl5 = create_clist_node(' ');
-
-    HTable *ht = create_table(CAPACITY);
-    ht_insert(ht, "ac", cl1);
-    ht_insert(ht, "za", cl2);
-    ht_insert(ht, "ch", cl3);
-    ht_insert(ht, "ri", cl4);
-    ht_insert(ht, "ch", cl5);
-    ht_print(ht);
-
-    printf("Deleting key \"ri\"...\n");
-    ht_delete(ht, "ri");
-    ht_print(ht);
-    
-    printf("Deleting key \"ac\"...\n");
-    ht_delete(ht, "ac");
-    ht_print(ht);
-    
-    destroy_htable(ht);
-    */
-    HTable *ht = markov_generate_ht("data/dutch.txt");
+    HTable *ht = NULL;
     int i = 0;
+    SList *words = slist_load_dataset("data/german.txt");
+    SList *a = slist_load_dataset("data/tolkeinesqe.txt");
+
+    slist_add(&words, &a);
+    
+    ht = markov_generate_ht(words);
     ht_print(ht);
     printf("Longest word in dataset:%d. Shortest word in dataset: %d.\n",
             ht->wmax, ht->wmin);
     //printf("Keys:\n");
     //slist_print(ht->keys);
-    printf("Starter keys:\n");
-    slist_print(ht->stkeys);
+    //printf("Starter keys:\n");
+    //slist_print(ht->stkeys);
     for(i = 0; i < 100; i++) {
         generate_random_name(ht);
     }
+    destroy_slist(&words);
     destroy_htable(ht);
 
     return 0;

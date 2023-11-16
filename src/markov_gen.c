@@ -21,33 +21,13 @@
 /*****
  * Markov chain generator functions
  *****/
-HTable* markov_generate_ht(char *fname) {
-    /* This function does the following:
-     * - Open the dataset file (fname)
-     * - Read and store strings in SList (words)
-     * - Loop through SList (words), doing:
-     *   = take first two characters of string (a1a2, "key")
-     *   = call markov_find_match(key, words)
-     *   markov_find_match(key, words) Does the following:
-     *   -= Look through SList (words) for any two characters that match key
-     *   -= Add the following character to CList
-     *   = Add to ht: key a1a2, CList
-     *   = Repeat with next two characters in string a2a3
-     *   = Continue until one of the characters is '\0'.
-     *   = GO to next string in SList
-     */
-
-    HTable *ht = create_table(CAPACITY);
+SList* slist_load_dataset(char *fname) {
     FILE *f = fopen(fname, "r+");
+    if(!f) return NULL;
     SList *words = NULL;
-    SList *sit = NULL;
     char buf[100];
     char in = fgetc(f);
     int i = 0;
-    int j = 0;
-    char key[KEYSZ+1];
-    key[KEYSZ] = '\0';
-    buf[i] = '\0';
 
     // Read file, store words in SList
     while(in != EOF) {
@@ -67,6 +47,32 @@ HTable* markov_generate_ht(char *fname) {
         buf[i] = '\0';
         slist_push(&words, buf);
     }
+    fclose(f);
+    return words;
+}
+
+HTable* markov_generate_ht(SList *words) {
+    /* This function does the following:
+     * - Open the dataset file (fname)
+     * - Read and store strings in SList (words)
+     * - Loop through SList (words), doing:
+     *   = take first two characters of string (a1a2, "key")
+     *   = call markov_find_match(key, words)
+     *   markov_find_match(key, words) Does the following:
+     *   -= Look through SList (words) for any two characters that match key
+     *   -= Add the following character to CList
+     *   = Add to ht: key a1a2, CList
+     *   = Repeat with next two characters in string a2a3
+     *   = Continue until one of the characters is '\0'.
+     *   = GO to next string in SList
+     */
+
+    HTable *ht = create_table(CAPACITY);
+    SList *sit = NULL;
+    int i = 0;
+    int j = 0;
+    char key[KEYSZ+1];
+    key[KEYSZ] = '\0';
 
     // Loop through SList
     sit = words;
@@ -105,8 +111,8 @@ HTable* markov_generate_ht(char *fname) {
     // Cleanup
     //printf("Words:\n");
     //slist_print(words);
-    destroy_slist(&words);
-    fclose(f);
+    //destroy_slist(&words);
+    //fclose(f);
     return ht;
 }
 
