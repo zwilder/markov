@@ -26,7 +26,7 @@ SList* slist_load_dataset(char *fname) {
     if(!f) return NULL;
     SList *words = NULL;
     char buf[100];
-    char in = fgetc(f);
+    int in = fgetc(f);
     int i = 0;
 
     // Read file, store words in SList
@@ -37,7 +37,7 @@ SList* slist_load_dataset(char *fname) {
             slist_push(&words, buf);
             i = 0;
         } else { 
-            buf[i] = in;
+            buf[i] = (char)in;
             i++;
         }
         in = fgetc(f);
@@ -108,11 +108,6 @@ HTable* markov_generate_ht(SList *words) {
     ht->wmax = slist_get_max(words);
     ht->wmin = slist_get_min(words);
     
-    // Cleanup
-    //printf("Words:\n");
-    //slist_print(words);
-    //destroy_slist(&words);
-    //fclose(f);
     return ht;
 }
 
@@ -122,38 +117,18 @@ char markov_find_key_str(char *str, char *key) {
     int j = 0;
     char buf[KEYSZ+1];
     buf[KEYSZ] = '\0';
-    //printf("Buf is \"%s\", str is \"%s\", key is \"%s\"\n",buf,str,key);
     for(i = 0; i < strlen(str)-KEYSZ+1; i++) {
-        //printf("%d - ",i);
         for(j = 0; j < KEYSZ; j++) {
             buf[j] = str[i+j];
         }
-        //printf("buf is \"%s\"",buf);
         if(strcmp(buf,key) == 0) {
-            //printf(", matches key \"%s\"",key);
             result = str[i+KEYSZ];
-            //printf(", result is \'%c\'\n", result);
             if(!result) {
                 result = '!';
             }
             break;
         }
-        //printf(" no match found.\n");
     }
-    /*
-    for (i = 0; i < (strlen(str)-1); i++) {
-        if((str[i] == key[0]) && (str[i+1] == key[1])) {
-            result = str[i+2];
-            if(!result) {
-                result = '!';
-            }
-            // Need to recursively call this function on the last part of the
-            // string, str[i+3] to str[strlen(str)], to account for words that
-            // have the key present more than once in it. TODO
-            break;
-        }
-    }
-    */
     return result;
 }
 
@@ -179,10 +154,8 @@ CList* markov_find_match(char *key, SList *words) {
     // Look through SList for key, if found add the next character after the key
     // to the CList
     while(tmp) {
-        //printf("Checking \"%s\" to see if it contains %s...\n", tmp->data,key);
         c = markov_find_key_str(tmp->data,key);
         if(c) {
-            //printf("\tSuccess, %c follows %s!\n",c,key);
             if(c == '!') c = '\0';
             if (result) {
                 clist_push(&result,c);
@@ -200,14 +173,6 @@ CList* markov_find_match(char *key, SList *words) {
  *****/
 HTNode* ht_get_random_node(HTable *ht) {
     HTNode *result = NULL;
-    /*
-    int i = 0;
-    while(!result) {
-         i = mt_rand(0,ht->size);
-        result = ht->items[i];
-    }
-    printf("HT Random node %d.\n",i);
-    */
     int r = mt_rand(0,slist_count(ht->stkeys)-1);
     int i = 0;
     SList *key = ht->stkeys;
@@ -246,11 +211,9 @@ void generate_random_name(HTable *ht) {
      * - Choose random following character from that value CList
      * - Look for next key made of key[1] and that character
      * - Continue until name is a max length or there is no values in CList
-     *
-     * What we need:
-     * - List of not NULL values in HTable.
      */
-    char name[100];
+    char *name = malloc(sizeof(char) * 100);
+    memset(name, '\0', 100);
     char key[KEYSZ + 1];
     char c;
     int i = 0;
@@ -266,43 +229,32 @@ void generate_random_name(HTable *ht) {
     key[KEYSZ] = '\0';
     name[KEYSZ] = '\0';
     name[0] = toupper(name[0]);
-    //printf("Starting with %s.\n",key);
     
-    //while(strlen(name) <= ht->wmin) {
-        for(i = KEYSZ; i < length; i++) {
-            if(!tmp) {
-                name[i] = '\0';
-                break;
-            }
-            c = clist_get_random(tmp->values, tmp->nvalues);
-            if(!c) {
-               name[i] = '\0';
-               break; 
-            }
-            name[i] = c;
-            // KEYSZ = 3
-            // k = KEYSZ - 1 - j
-            // key[0] = name[i-2] | j=0 k=2
-            // key[1] = name[i-1] | j=1 k=1
-            // key[2] = name[i]   | j=2 k=0
-            for(j = 0; j < KEYSZ; j++) {
-                k = KEYSZ - 1 - j;
-                key[j] = name[i-k];
-            } 
-            //printf("->Key:%s\n",key);
-            tmp = ht->items[ht_hash(key)];
+    for(i = KEYSZ; i < length; i++) {
+        if(!tmp) {
+            name[i] = '\0';
+            break;
         }
-    //}
-    printf("%s ",name);
-    /*
-    c = clist_get_random(tmp->values, tmp->nvalues);
-    if(c) {
-        name[2] = c;
-        name[3] = '\0';
-        printf("->Adding %c, %s\n",c,name);
-    } else {
-        name[2] = '\0';
-        printf("->%s is end.\n",name);
+        c = clist_get_random(tmp->values, tmp->nvalues);
+        if(!c) {
+           name[i] = '\0';
+           break; 
+        }
+        name[i] = c;
+        /* Leaving this here so future Zach won't look at that loop below like
+         * it's some sort of dark black magic.
+         * KEYSZ = 3
+         * k = KEYSZ - 1 - j
+         * key[0] = name[i-2] | j=0 k=2
+         * key[1] = name[i-1] | j=1 k=1
+         * key[2] = name[i]   | j=2 k=0
+         */
+        for(j = 0; j < KEYSZ; j++) {
+            k = KEYSZ - 1 - j;
+            key[j] = name[i-k];
+        } 
+        tmp = ht->items[ht_hash(key)];
     }
-    */
+    printf("%s ",name);
+    free(name);
 }

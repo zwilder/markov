@@ -10,7 +10,7 @@ SOURCES = ./src/*.c
 
 all: markov
 
-markov:
+markov: ctags
 	$(CC) $(SOURCES) $(CFLAGS) $(GFLAGS) -o markov 
 
 run:

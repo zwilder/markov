@@ -23,22 +23,26 @@ int main(int argc, char **argv) {
     init_genrand(time(NULL));
     HTable *ht = NULL;
     int i = 0;
-    SList *words = slist_load_dataset("data/german.txt");
-    SList *a = slist_load_dataset("data/tolkeinesqe.txt");
-
-    slist_add(&words, &a);
-    
+    SList *words = NULL;
+    SList *tmp = NULL;
+    if(argc < 2) {
+        printf("Usage: markov input1.txt input2.txt ... inputN.txt\n");
+        return -1;
+    }
+    words = slist_load_dataset(argv[1]);
+    for(i = 2; i < argc; i++) {
+        tmp = slist_load_dataset(argv[i]);
+        if(tmp) {
+            slist_add(&words,&tmp);
+        } else {
+            printf("Unable to load file: \"%s\"\n", argv[i]);
+        }
+    }
     ht = markov_generate_ht(words);
-    ht_print(ht);
-    printf("Longest word in dataset:%d. Shortest word in dataset: %d.\n",
-            ht->wmax, ht->wmin);
-    //printf("Keys:\n");
-    //slist_print(ht->keys);
-    //printf("Starter keys:\n");
-    //slist_print(ht->stkeys);
     for(i = 0; i < 100; i++) {
         generate_random_name(ht);
     }
+    printf("\n");
     destroy_slist(&words);
     destroy_htable(ht);
 
