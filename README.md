@@ -1,3 +1,4 @@
+## Markov Chain Word Generation
 Markov chain algorithm basically goes like:
 
 1: Parse the list and generate a hash table, where each key is a pair of
@@ -81,6 +82,5 @@ Then "ar" would have a:
 - 1/8 chance of being followed by 'o'
 - 1/8 chance of being followed by 'j'
 
-NOTE: Possibly more interesting results by changing the char pair key to a
-three char key? Or more? Maybe this should be an adjustable parameter? 
-
+Check [the blog](https://zwilder.github.io/posts/2023-11-18-markov/) for a more
+detailed description.

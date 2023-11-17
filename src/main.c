@@ -26,7 +26,9 @@ int main(int argc, char **argv) {
     SList *words = NULL;
     SList *tmp = NULL;
     if(argc < 2) {
-        printf("Usage: markov input1.txt input2.txt ... inputN.txt\n");
+        printf("Usage: markov [input files]\n");
+        printf("Where [input files] are files containing words separated by a space.\n");
+        printf("Example: markov data1.txt data2.txt\n");
         return -1;
     }
     words = slist_load_dataset(argv[1]);
