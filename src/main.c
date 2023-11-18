@@ -19,20 +19,34 @@
 */
 #include <markov.h>
 
+void print_help(void) {
+    printf("Usage: markov [number] [input files]\n");
+    printf("Where:\n\t[input files] are files containing words separated by a space.\n");
+    printf("\t[number] is number of names to generate\n");
+    printf("Example: \"markov 100 data1.txt data2.txt\" ");
+    printf("will generate 100 random names\n using data1.txt and data2.txt as input.\n");
+}
+
 int main(int argc, char **argv) {
     init_genrand(time(NULL));
     HTable *ht = NULL;
     int i = 0;
+    int n = 0;
     SList *words = NULL;
     SList *tmp = NULL;
-    if(argc < 2) {
-        printf("Usage: markov [input files]\n");
-        printf("Where [input files] are files containing words separated by a space.\n");
-        printf("Example: markov data1.txt data2.txt\n");
+    if(argc < 3) {
+        print_help();
         return -1;
     }
-    words = slist_load_dataset(argv[1]);
-    for(i = 2; i < argc; i++) {
+
+    n = atoi(argv[1]);
+    if(n < 1) {
+        print_help();
+        return -1;
+    }
+    words = slist_load_dataset(argv[2]);
+
+    for(i = 3; i < argc; i++) {
         tmp = slist_load_dataset(argv[i]);
         if(tmp) {
             slist_add(&words,&tmp);
@@ -40,13 +54,15 @@ int main(int argc, char **argv) {
             printf("Unable to load file: \"%s\"\n", argv[i]);
         }
     }
-    ht = markov_generate_ht(words);
-    for(i = 0; i < 100; i++) {
-        generate_random_name(ht);
+    if(words) {
+        ht = markov_generate_ht(words);
+        for(i = 0; i < n; i++) {
+            generate_random_name(ht);
+        }
+        printf("\n");
+        destroy_slist(&words);
+        destroy_htable(ht);
     }
-    printf("\n");
-    destroy_slist(&words);
-    destroy_htable(ht);
 
     return 0;
 }

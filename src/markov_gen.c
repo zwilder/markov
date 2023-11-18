@@ -22,6 +22,7 @@
  * Markov chain generator functions
  *****/
 SList* slist_load_dataset(char *fname) {
+    if(!fname) return NULL;
     FILE *f = fopen(fname, "r+");
     if(!f) return NULL;
     SList *words = NULL;
