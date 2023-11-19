@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #include <mt19937.h>
 #include <slist.h>
@@ -122,6 +124,6 @@ char markov_find_key_str(char *str, char *key);
 // Random name functions
 HTNode* ht_get_random_node(HTable *ht);
 char clist_get_random(CList *cl, int n);
-void generate_random_name(HTable *ht);
+void generate_random_name(HTable *ht,char *outf);
 
 #endif //MARKOV_H

@@ -206,7 +206,7 @@ char clist_get_random(CList *cl, int n) {
     return result;
 }
 
-void generate_random_name(HTable *ht) {
+void generate_random_name(HTable *ht,char *outf) {
     /* Need to:
      * - Choose random element from table to start name (key)
      * - Choose random following character from that value CList
@@ -220,6 +220,7 @@ void generate_random_name(HTable *ht) {
     int i = 0;
     int j = 0;
     int k = 0;
+    FILE *f = NULL;
     int length = mt_rand(ht->wmin, ht->wmax);
     length = ht->wmax;
     HTNode *tmp = ht_get_random_node(ht);
@@ -256,6 +257,12 @@ void generate_random_name(HTable *ht) {
         } 
         tmp = ht->items[ht_hash(key)];
     }
-    printf("%s ",name);
+    if(outf) {
+        f = fopen(outf, "a+");
+        fprintf(f,"%s ",name);
+        fclose(f);
+    } else {
+        printf("%s ",name);
+    }
     free(name);
 }
