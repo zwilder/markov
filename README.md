@@ -82,5 +82,5 @@ Then "ar" would have a:
 - 1/8 chance of being followed by 'o'
 - 1/8 chance of being followed by 'j'
 
-Check [the blog](https://zwilder.github.io/posts/2023-11-18-markov/) for a more
+Check [the blog](https://zwilder.github.io/posts/2023-11-17-markov/) for a more
 detailed description.
