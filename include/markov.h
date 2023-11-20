@@ -114,7 +114,6 @@ int clist_count(CList *cl);
  * markov_gen.c
  *****/
 // Markov chain generator functions
-SList* slist_load_dataset(char *fname);
 HTable* markov_generate_ht(SList *words);
 CList* markov_find_match(char *key, SList *words);
 void string_to_lower(char *str);

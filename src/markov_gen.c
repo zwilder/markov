@@ -21,37 +21,6 @@
 /*****
  * Markov chain generator functions
  *****/
-SList* slist_load_dataset(char *fname) {
-    if(!fname) return NULL;
-    FILE *f = fopen(fname, "r+");
-    if(!f) return NULL;
-    SList *words = NULL;
-    char buf[100];
-    int in = fgetc(f);
-    int i = 0;
-
-    // Read file, store words in SList
-    while(in != EOF) {
-        if((in == ' ') || (in == '\n')) {
-            // End of word
-            buf[i] = '\0';
-            slist_push(&words, buf);
-            i = 0;
-        } else { 
-            buf[i] = (char)in;
-            i++;
-        }
-        in = fgetc(f);
-    }
-    if((buf[i] != '\0') && (i > 0)) {
-        // Don't miss the last word in the dataset
-        buf[i] = '\0';
-        slist_push(&words, buf);
-    }
-    fclose(f);
-    return words;
-}
-
 HTable* markov_generate_ht(SList *words) {
     /* This function does the following:
      * - Open the dataset file (fname)
