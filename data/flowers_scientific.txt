@@ -9,3 +9,27 @@ Acacia Phelanopsis Spray chrysanthemum Anthurium Paeonia Alstromeria Lisianthus
 Rosa Scabiosa Limonium Aster Dendrobium Antirrhinum Dianthus Limonium Matthiola
 Protea Helianthus Lathyrus Dianthus barbatus Gladiolus Gerbera Tulipa
 Chamaelaucium Anemone Achillia
+Rosa chinensis Lilium longiflorum Tulipa gesneriana Chrysanthemum morifolium
+Gerbera jamesonii Dianthus caryophyllus Orchidaceae Narcissus pseudonarcissus
+Iris germanica Delphinium ajacis Paeonia lactiflora Freesia corymbosa Echinacea
+purpurea Lavandula angustifolia Petunia hybrida Salvia splendens Impatiens
+walleriana Begonia tuberhybrida Pelargonium hortorum Viola wittrockiana
+Dahlia hybrida Gazania rigens Zinnia elegans Calendula officinalis Cosmos
+bipinnatus Clarkia elegans Scabiosa atropurpurea Matthiola incana Lunaria annua
+Cheiranthus cheiri Digitalis purpurea Antirrhinum majus Viola tricolor Myosotis
+scorpioides Bellis perennis Primula vulgaris Papaver rhoeas Tulipa sylvestris
+Narcissus tazetta Iris sibirica Delphinium elatum Paeonia officinalis Freesia
+refracta Echinacea pallida Lavandula stoechas Petunia grandiflora Salvia elegans
+Impatiens balsamina Begonia semperflorens Pelargonium graveolens Viola odorata
+Dahlia pinnata Gazania splendens Zinnia angustifolia Calendula arvensis Cosmos
+sulphureus Clarkia amoena Scabiosa caucasica Matthiola bicornis Lunaria rediviva
+Cheiranthus mutabilis Digitalis purpurea Antirrhinum majus Viola tricolor
+Myosotis alpestris Bellis perennis Primula veris Papaver somniferum Tulipa
+kaufmanniana Narcissus cyclamineus Iris pumila Delphinium consolida Paeonia
+suffruticosa Freesia leichtlinii Echinacea angustifolia Lavandula lanata Petunia
+violacea Salvia farinacea Impatiens hawkeri Begonia rePelargonium zonale Viola
+cornuta Dahlia coccinea Gazania linearis Zinnia violacea Calendula officinalis
+Cosmos bipinnatus Clarkia unguiculata Scabiosa stellata Matthiola tricuspis
+Lunaria rediviva Cheiranthus albus Digitalis purpurea Antirrhinum majus Viola
+tricolor Myosotis sylvatica Bellis perennis Primula vulgaris Papaver rhoeas
+Tulipa gesneriana

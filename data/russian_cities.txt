@@ -1,0 +1,5 @@
+Moscow Saint Petersburg Novosibirsk Yekaterinburg Nizhny Novgorod Kazan
+Chelyabinsk Omsk Samara Rostov-on-Don Volgograd Perm Krasnoyarsk Ufa Voronezh
+Yaroslavl Saratov Tolyatti Vologda Ulyanovsk Magnitogorsk Izhevsk Irkutsk
+Khabarovsk Vladivostok Yaroslavl Saratov Tolyatti Vologda Ulyanovsk Magnitogorsk
+Izhevsk Irkutsk Khabarovsk Vladivostok
