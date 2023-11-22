@@ -98,6 +98,7 @@ void ht_insert(HTable *table, char *key, CList *values);
 CList* ht_search(HTable *table, char *key);
 void ht_delete(HTable *table, char *key);
 void ht_print(HTable *table);
+void ht_write(HTable *ht, char *fname, char *mode);
 void ht_print_item(HTable *table, char *key);
 
 // HTList functions
@@ -108,6 +109,7 @@ HTNode* htlist_pop(HTList **headref);
 void clist_push(CList **headref, char c);
 void clist_print(CList *headref);
 void clist_bracketprint(CList *headref);
+void clist_bracketwrite(CList *headref, FILE *f);
 int clist_count(CList *cl);
 
 /*****
@@ -129,6 +131,7 @@ SList* generate_random_word(HTable *ht,char *outf);
  * main.c
  *****/
 void print_help(void);
+void log_separator(FILE *f);
 
 /*****
  * generate_species.c

@@ -341,8 +341,8 @@ SList* slist_load_dataset(char *fname) {
     return words;
 }
 
-void slist_write(SList *s, char d, char *fname) {
-    FILE *f = fopen(fname, "w+");
+void slist_write(SList *s, char d, char *fname, char *mode) {
+    FILE *f = fopen(fname, mode);
     SList *tmp = s;
     while(tmp) {
         fprintf(f,"%s%c",tmp->data,d);

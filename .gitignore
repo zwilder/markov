@@ -4,6 +4,7 @@
 *.bak
 *.swp
 *.bin
+log.txt
 tags
 scratch/*
 *arkov

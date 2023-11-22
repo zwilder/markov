@@ -33,15 +33,23 @@ int generate_species(int argc,char **argv) {
     char *outf = NULL;
     HTable *ht = NULL;
     FILE *f = NULL;
+    bool log = false;
+    char *gfile = NULL;
+    char *sfile = NULL;
     opterr = 0; // Don't show default errors
     optind = 0; // Reset since we are reloading getopt
-    while((c = getopt(argc,argv,"hn:o:g:s:")) != -1) {
+    while((c = getopt(argc,argv,"lhn:o:g:s:")) != -1) {
         switch(c) {
+            case 'l':
+                log = true;
+                break;
             case 'g':
                 genredat = slist_load_dataset(optarg);
+                gfile = strdup(optarg);
                 break;
             case 's':
                 speciesdat = slist_load_dataset(optarg);
+                sfile = strdup(optarg);
                 break;
             case 'h':
                 print_help();
@@ -71,6 +79,8 @@ int generate_species(int argc,char **argv) {
                 destroy_slist(&genredat);
                 destroy_slist(&speciesdat);
                 if(outf) free(outf);
+                if(gfile) free(gfile);
+                if(sfile) free(sfile);
                 return -1;
                 break;
         }
@@ -80,7 +90,30 @@ int generate_species(int argc,char **argv) {
         destroy_slist(&genredat);
         destroy_slist(&speciesdat);
         if(outf) free(outf);
+        if(gfile) free(gfile);
+        if(sfile) free(sfile);
         return -1;
+    }
+    
+    if(log) {
+        f = fopen("log.txt","w+");
+        log_separator(f);
+        fprintf(f,"\nMarkov Word Generator Log File\n");
+        fprintf(f,"\n\"Genre/Species\"\n");
+        log_separator(f);
+        fprintf(f,"\nWords read from datasets:\n");
+        fprintf(f,"Genre: %s\n",gfile);
+        fclose(f);
+        slist_write(genredat, ' ', "log.txt","a+");
+        f = fopen("log.txt","a+");
+        log_separator(f);
+        fprintf(f,"\nSpecies: %s\n",sfile);
+        fclose(f);
+        slist_write(speciesdat, ' ', "log.txt","a+");
+        f = fopen("log.txt","a+");
+        fprintf(f,"\n");
+        log_separator(f);
+        fclose(f);
     }
 
     //Generate genre
@@ -90,6 +123,12 @@ int generate_species(int argc,char **argv) {
         //slist_add(&genre, &(generate_random_word(ht, NULL)));
         slist_push_node(&genre, generate_random_word(ht, NULL));
     }
+    if (log) {
+        f = fopen("log.txt","a+");
+        fprintf(f,"\nHash table from %s:\n",gfile);
+        fclose(f);
+        ht_write(ht, "log.txt","a+");
+    }
     destroy_htable(ht);
 
     //Generate species
@@ -98,6 +137,12 @@ int generate_species(int argc,char **argv) {
     for(i = 0; i < n; i++) {
         //slist_add(&species, &generate_random_word(ht, NULL));
         slist_push_node(&species, generate_random_word(ht, NULL));
+    }
+    if (log) {
+        f = fopen("log.txt","a+");
+        fprintf(f,"Hash table from %s:\n",sfile);
+        fclose(f);
+        ht_write(ht, "log.txt","a+");
     }
     destroy_htable(ht);
     slist_to_lower(species);
@@ -128,6 +173,10 @@ int generate_species(int argc,char **argv) {
             its = its->next;
         }
     }
+    
+    // Cleanup
+    free(gfile);
+    free(sfile);
     destroy_slist(&genredat);
     destroy_slist(&speciesdat);
     destroy_slist(&genre);

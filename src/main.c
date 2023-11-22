@@ -28,9 +28,14 @@ int main(int argc, char **argv) {
     SList *words = NULL;
     SList *tmp = NULL;
     char *outf = NULL;
+    bool log = false;
+    FILE *f = NULL;
     opterr = 0; // Don't show default errors
-    while((c = getopt(argc,argv,"hsgn:o:")) != -1) {
+    while((c = getopt(argc,argv,"lhsgn:o:")) != -1) {
         switch(c) {
+            case 'l':
+                log = true;
+                break;
             case 's':
             case 'g':
                 i = generate_species(argc,argv);
@@ -91,6 +96,19 @@ int main(int argc, char **argv) {
         }
         if(!outf) slist_print(tmp, ' ');
         printf("\n");
+        if(log) {
+            f = fopen("log.txt","w+");
+            log_separator(f);
+            fprintf(f,"\nMarkov Word Generator Log File\n");
+            log_separator(f);
+            fprintf(f,"\nWords read from dataset:\n");
+            for(i = optind; i < argc; i++) {
+                fprintf(f,"\t%s\n",argv[i]);
+            }
+            fclose(f);
+            slist_write(words, ' ', "log.txt", "a+");
+            ht_write(ht, "log.txt", "a+");
+        }
         destroy_slist(&tmp);
         destroy_slist(&words);
         destroy_htable(ht);
@@ -104,10 +122,18 @@ int main(int argc, char **argv) {
     return 0;
 }
 
+void log_separator(FILE *f) {
+    int i = 0;
+    for(i=0; i < 20; i++) {
+        fprintf(f,"*~");
+    }
+}
+
 void print_help(void) {
-    printf("Usage:\n\tmarkov [-n number] [-o outfile] infile1 [infile2...]\n");
+    printf("Usage:\n\tmarkov [-l] [-n number] [-o outfile] infile1 [infile2...]\n");
     printf("\tmarkov -g infile1 -s infile2 [-n number] [-o outfile]\n");
     printf("Where:\n\tinfile1 [infile2...] are data files containing space separated words\n");
+    printf("\t[-l] writes a log file to \"log.txt\" in the current directory\n");
     printf("\t[-n number] is number of names to generate\n");
     printf("\t[-o outfile] is the file to write the output to\n");
     printf("\t-g infile1 -s infile2 are input data for a \"Genre species\" output\n");

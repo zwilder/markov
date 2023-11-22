@@ -53,6 +53,6 @@ bool slist_delete(SList **s, char *str);
 int slist_get_max(SList *s);
 int slist_get_min(SList *s);
 SList* slist_load_dataset(char *fname);
-void slist_write(SList *s, char d, char *fname);
+void slist_write(SList *s, char d, char *fname, char *mode);
 
 #endif

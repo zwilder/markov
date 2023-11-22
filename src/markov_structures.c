@@ -314,6 +314,32 @@ void ht_print_item(HTable *table, char *key) {
         clist_bracketprint(val);
     }
 }
+
+void ht_write(HTable *ht, char *fname, char *mode) {
+    int i = 0;
+    FILE *f = fopen(fname,mode);
+    HTList *head = NULL;
+    fprintf(f,"\n\t********************\n");
+    fprintf(f, "\tHashTable\n\t********************\n");
+    for(i = 0; i < ht->size; i++) {
+        if(ht->items[i]) {
+            fprintf(f,"Index: %d | Key: %s | Values: ",
+                    i, ht->items[i]->key);
+            clist_bracketwrite(ht->items[i]->values,f);
+            if(ht->ofbuckets[i]) {
+                fprintf(f,"\t=> Overflow Bucket =>\n");
+                head = ht->ofbuckets[i];
+                while(head) {
+                    fprintf(f,"\tKey: %s | Values: ", head->data->key);
+                    clist_bracketwrite(head->data->values,f);
+                    head = head->next;
+                }
+            }
+        }
+    }
+    fprintf(f,"\t********************\n\n");
+    fclose(f);
+}
 /*****
  * HTList functions
  *****/
@@ -390,6 +416,25 @@ void clist_bracketprint(CList *headref) {
             printf(",");
         } else {
             printf("]\n");
+        }
+    }
+}
+
+void clist_bracketwrite(CList *headref, FILE *f) {
+    // Helper function for ht_write(...)
+    CList *tmp = headref;
+    if(!tmp) {
+        fprintf(f,"\n");
+        return;
+    }
+    fprintf(f,"[");
+    while(tmp) {
+        fprintf(f,"\'%c\'",tmp->ch);
+        tmp = tmp->next;
+        if(tmp) {
+            fprintf(f,",");
+        } else {
+            fprintf(f,"]\n");
         }
     }
 }
