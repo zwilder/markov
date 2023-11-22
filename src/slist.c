@@ -101,6 +101,13 @@ void slist_push(SList **head, char *s) {
     tmp->next = newNode;
 }
 
+void slist_push_node(SList **head, SList *s) {
+    /* Push an SList node onto the front of the SList */
+    if(!s || !(*head)) return;
+    s->next = *head;
+    *head = s;
+}
+
 int slist_count(SList *node) {
     /* Count and return the number of nodes in the SList */
     if(!node) {
@@ -248,13 +255,11 @@ SList* slist_linewrap(char *str, int w) {
     return result;
 }
 
-void slist_print(SList *head) {
+void slist_print(SList *head, char d) {
     SList *tmp = head;
-    int i = 1;
     while(tmp) {
-        printf("%d - %s\n",i, tmp->data);
+        printf("%s%c",tmp->data,d);
         tmp = tmp->next;
-        i++;
     }
 }
 
@@ -334,4 +339,14 @@ SList* slist_load_dataset(char *fname) {
     }
     fclose(f);
     return words;
+}
+
+void slist_write(SList *s, char d, char *fname) {
+    FILE *f = fopen(fname, "w+");
+    SList *tmp = s;
+    while(tmp) {
+        fprintf(f,"%s%c",tmp->data,d);
+        tmp = tmp->next;
+    }
+    fclose(f);
 }

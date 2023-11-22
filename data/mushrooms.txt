@@ -1,0 +1,53 @@
+Agaricus arvensis Agaricus augustus Agaricus campestris Agaricus sylvicola
+Agrocybe pediades Agrocybe praecox Albatrellus confluens Albatrellus ovinus
+Aleuria aurantia Amanita battarrae Amanita bisporigera Amanita cokeri Amanita
+fulva Amanita jacksonii Amanita muscaria Amanita pantherina Amanita phalloides
+Amanita porphyria Amanita regalis Amanita rubescens Amanita vaginata Amanita
+virosa Ampulloclitocybe clavipes Armillaria mellea Auriscalpium vulgare Bankera
+fuligineoalba Boletus edulis Boletus pinophilus Bondarzewia berkeleyi Bovista
+nigrescens Bovista plumbea Calocera viscosa Calocybe gambosa Calocybe persicolor
+Calvatia gigantea Cantharellula umbonata Cantharellus cibarius Chalciporus
+piperatus Chlorophyllum molybdites Chlorophyllum rhacodes Chroogomphus
+britannicus Clathrus ruber Clitocybe gibba Clitocybe nebularis Clitocybe nuda
+Clitopilus prunulus Collybia dryophila Coltricia perennis Conocybe apala
+Coprinellus disseminatus Coprinellus xanthothrix Coprinopsis atramentaria
+Coprinopsis variegata Coprinus comatus Coprinus plicatilis Cortinarius
+alboviolaceus Cortinarius armillatus Cortinarius camphoratus Cortinarius
+caperatus Cortinarius collinitus Cortinarius croceus Cortinarius laniger
+Cortinarius malicorius Cortinarius mucosus Cortinarius orellanus Cortinarius
+rubellus Cortinarius semisanguineus Cortinarius traganus Cortinarius violaceus
+Craterellus tubaeformis Cystoderma amianthinum Cystodermella cinnabarina
+Entoloma sericeum Entoloma vernum Galerina marginata Geastrum rufescens
+Gomphidius glutinosus Gymnopilus picreus Gymnopus peronatus Gyromitra esculenta
+Gyromitra infula Hebeloma crustuliniforme Hebeloma mesophaeum Helvella elastica
+Hericium americanum Hericium cirrhatum Hericium erinaceus Hortiboletus rubellus
+Hydnum repandum Hydnum rufescens Hygrophoropsis aurantiaca Hygrophorus
+camarophyllus Hygrophorus hypothejus Hygrophorus pustulatus Hypholoma capnoides
+Hypholoma fasciculare Hypholoma lateritium Hypholoma marginatum Imleria badia
+Inocybe lacera Kuehneromyces lignicola Kuehneromyces mutabilis Laccaria laccata
+Lacrymaria lacrymabunda Lactarius camphoratus Lactarius deliciosus Lactarius
+deterrimus Lactarius helvus Lactarius indigo Lactarius lignyotus Lactarius
+mammosus Lactarius rufus Lactarius tabidus Lactarius torminosus Lactarius
+trivialis Lactarius turpis Lactarius volemus Lactifluus piperatus Laetiporus
+sulphureus Leccinum aurantiacum Leccinum scabrum Leccinum versipelle Lepiota
+clypeolaria Leucocoprinus birnbaumii Leucocybe connata Lycoperdon excipuliforme
+Lycoperdon nigrescens Lycoperdon perlatum Lycoperdon pratense Lycoperdon
+pyriforme Macrolepiota procera Marasmiellus perforans Marasmius oreades
+Marasmius rotula Megacollybia platyphylla Melanoleuca cognata Morchella elata
+Morchella esculenta Mycena epipterygia Mycena galericulata Mycena laevigata
+Mycena pura Omphalotus illudens Omphalotus olearius Otidea onotica Panaeolus
+foenisecii Paxillus involutus Peziza badia Phallus impudicus Phallus rubicundus
+Pholiota alnicola Pholiota aurivella Pholiota limonella Pholiota squarrosa
+Pleurotus citrinopileatus Pleurotus ostreatus Pleurotus pulmonarius Polyporus
+ciliatus Polyporus squamosus Psathyrella candolleana Psathyrella microrrhiza
+Psilocybe semilanceata Ramaria lutea Rhizina undulata Rickenella swartzii
+Rubroboletus satanas Russula acrifolia Russula adusta Russula aeruginea Russula
+claroflava Russula decolorans Russula emetica Russula mustelina Russula paludosa
+Russula velenovskyi Russula vesca Russula vinosa Russula xerampelina Sarcodon
+squamosus Strobilomyces strobilaceus Strobilurus esculentus Strobilurus
+stephanocystis Stropharia hornemannii Suillus americanus Suillus bovinus Suillus
+grevillei Suillus luteus Suillus variegatus Tapinella atrotomentosa Tapinella
+panuoides Tricholoma aestuans Tricholoma equestre Tricholoma focale Tricholoma
+saponaceum Tricholoma sejunctum Tricholoma stiparophyllum Tricholomopsis decora
+Tricholomopsis rutilans Turbinellus floccosus Tylopilus felleus Xerocomellus
+chrysenteron Xerocomus subtomentosus Xeromphalina campanella

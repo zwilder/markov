@@ -123,6 +123,16 @@ char markov_find_key_str(char *str, char *key);
 // Random name functions
 HTNode* ht_get_random_node(HTable *ht);
 char clist_get_random(CList *cl, int n);
-void generate_random_name(HTable *ht,char *outf);
+SList* generate_random_word(HTable *ht,char *outf);
+
+/*****
+ * main.c
+ *****/
+void print_help(void);
+
+/*****
+ * generate_species.c
+ *****/
+int generate_species(int argc,char **argv);
 
 #endif //MARKOV_H

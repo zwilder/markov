@@ -153,7 +153,7 @@ HTNode* ht_get_random_node(HTable *ht) {
         result = ht->items[ht_hash(key->data)];
     } else {
         printf("Item %d not found in hash table keys! i = %d.\n", r,i);
-        slist_print(ht->keys);
+        slist_print(ht->keys,'\n');
     }
 
     return result;
@@ -175,13 +175,14 @@ char clist_get_random(CList *cl, int n) {
     return result;
 }
 
-void generate_random_name(HTable *ht,char *outf) {
+SList* generate_random_word(HTable *ht,char *outf) {
     /* Need to:
      * - Choose random element from table to start name (key)
      * - Choose random following character from that value CList
      * - Look for next key made of key[1] and that character
      * - Continue until name is a max length or there is no values in CList
      */
+    SList *result = NULL;
     char *name = malloc(sizeof(char) * 100);
     memset(name, '\0', 100);
     char key[KEYSZ + 1];
@@ -228,10 +229,12 @@ void generate_random_name(HTable *ht,char *outf) {
     }
     if(outf) {
         f = fopen(outf, "a+");
-        fprintf(f,"%s ",name);
+        fprintf(f,"%s\n",name);
         fclose(f);
     } else {
-        printf("%s ",name);
+        //printf("%s ",name);
+        result = create_slist(name);
     }
     free(name);
+    return(result);
 }

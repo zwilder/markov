@@ -19,15 +19,6 @@
 */
 #include <markov.h>
 
-void print_help(void) {
-    printf("Usage: markov [-n number] [-o outfile] infile1 [infile2...]\n");
-    printf("Where:\n\tinfile1 [infile2...] are data files containing space separated words\n");
-    printf("\t[-n number] is number of names to generate\n");
-    printf("\t[-o outfile] is the file to write the output to\n");
-    printf("Example: \"markov -n 100 data1.txt data2.txt\" ");
-    printf("will generate 100 random names\n using data1.txt and data2.txt as input.\n");
-}
-
 int main(int argc, char **argv) {
     init_genrand(time(NULL));
     HTable *ht = NULL;
@@ -38,8 +29,15 @@ int main(int argc, char **argv) {
     SList *tmp = NULL;
     char *outf = NULL;
     opterr = 0; // Don't show default errors
-    while((c = getopt(argc,argv,"n:o:")) != -1) {
+    while((c = getopt(argc,argv,"hsgn:o:")) != -1) {
         switch(c) {
+            case 's':
+            case 'g':
+                i = generate_species(argc,argv);
+                return i;
+            case 'h':
+                print_help();
+                break;
             case 'n':
                 n = atoi(optarg);
                 if(n < 1) {
@@ -86,20 +84,35 @@ int main(int argc, char **argv) {
 
     if(words) {
         ht = markov_generate_ht(words);
+        tmp = generate_random_word(ht,outf);
         for(i = 0; i < n; i++) {
-            generate_random_name(ht,outf);
+            //slist_add(&tmp,&(generate_random_word(ht,outf)));
+            slist_push_node(&tmp, generate_random_word(ht,outf));
         }
+        if(!outf) slist_print(tmp, ' ');
         printf("\n");
+        destroy_slist(&tmp);
         destroy_slist(&words);
         destroy_htable(ht);
-    } else {
-        print_help();
-        return -1;
-    }
+    } 
+
     if(outf) {
         printf("%d words generated and written to %s\n", n, outf);
         free(outf);
     }
     
     return 0;
+}
+
+void print_help(void) {
+    printf("Usage:\n\tmarkov [-n number] [-o outfile] infile1 [infile2...]\n");
+    printf("\tmarkov -g infile1 -s infile2 [-n number] [-o outfile]\n");
+    printf("Where:\n\tinfile1 [infile2...] are data files containing space separated words\n");
+    printf("\t[-n number] is number of names to generate\n");
+    printf("\t[-o outfile] is the file to write the output to\n");
+    printf("\t-g infile1 -s infile2 are input data for a \"Genre species\" output\n");
+    printf("Example: \"markov -n 100 data1.txt data2.txt\" ");
+    printf("will generate 100 random names\n using data1.txt and data2.txt as input.\n");
+    printf("Example: \"markov -n 100 -o out.txt -g data1.txt -s data2.txt\" ");
+    printf("will generate 100 random \"Genre species\" style names, and write them to \"out.txt\"\n");
 }

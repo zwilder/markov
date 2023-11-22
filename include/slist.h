@@ -41,16 +41,18 @@ void destroy_slist(SList **head);
 
 void slist_push_blank(SList **head, int strsize);
 void slist_push(SList **head, char *s);
+void slist_push_node(SList **head, SList *s);
 int slist_count(SList *node);
 int slist_count_chars(SList *node, bool incSpace); 
 char* slist_get_string(SList *node);
 void slist_add(SList **to, SList **from); 
 SList* split_string(char *s, char delim); 
 SList* slist_linewrap(char *str, int w);
-void slist_print(SList *head);
+void slist_print(SList *head,char d);
 bool slist_delete(SList **s, char *str);
 int slist_get_max(SList *s);
 int slist_get_min(SList *s);
 SList* slist_load_dataset(char *fname);
+void slist_write(SList *s, char d, char *fname);
 
 #endif
