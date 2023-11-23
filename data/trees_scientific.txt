@@ -1,12 +1,58 @@
-Acer campestre Acer platanoides Acer pseudoplatanus Aesculus hippocatanum Alnus
-cordata Alnus glutinosa Alnus incana Betula pendula Betula pubescens Carpinus
-betulus Castanea sativa Fagus sylvatica Fraxinus excelsior Juglans regia Malus
-sylvestris Populus robusta Populus canescens Populus alba Populus nigra Populus
-tremula Prunus avium prunus padus Quercus petraea Quercus robur Quercus rubra
-Salix alba Salix caprea Salix cinerea Salix fragilis Sorbus aria Sorbus
-aucuparia Sorbus intermedia Tilia cordata Tilia platyphyllus Quercuis ilex Abies
-nordmanniana Abies procera Chamaecyparis lawsoniana Larix decidua Larix
-leptolepsis Larix eurolepsis Picea abies Picea omorika Picea sitchensis Pinus
-contorta Pinus sylvestris Taxus baccata Thuja plicata Tsuga heterophylla
-Cupressocyparis leylandii Cupressocyparis leylandii Pinus sylvestris Taxus
-baccata
+Acer campestre
+Acer platanoides
+Acer pseudoplatanus
+Aesculus hippocatanum
+Alnus cordata
+Alnus glutinosa
+Alnus incana
+Betula pendula
+Betula pubescens
+Carpinus betulus
+Castanea sativa
+Fagus sylvatica
+ 
+Fraxinus excelsior
+Juglans regia
+Malus sylvestris
+Populus robusta
+Populus canescens
+Populus alba
+Populus nigra
+ 
+Populus tremula
+Prunus avium
+prunus padus
+Quercus petraea
+Quercus robur
+Quercus rubra
+Salix alba
+Salix caprea
+Salix cinerea
+Salix fragilis
+Sorbus aria
+Sorbus aucuparia
+Sorbus intermedia
+Tilia cordata
+Tilia platyphyllus
+Quercuis ilex
+ 
+Abies nordmanniana
+Abies procera
+Chamaecyparis lawsoniana
+Larix decidua
+Larix leptolepsis
+Larix eurolepsis
+Picea abies
+Picea omorika
+ 
+Picea sitchensis
+Pinus contorta
+ 
+Pinus sylvestris
+Taxus baccata
+Thuja plicata
+Tsuga heterophylla
+Cupressocyparis leylandii
+Cupressocyparis leylandii
+Pinus sylvestris
+Taxus baccata
