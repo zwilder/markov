@@ -1,4 +1,29 @@
 ## Markov Chain Word Generation
+
+Check [the blog](https://zwilder.github.io/posts/2023-11-17-markov/) for a more
+detailed description of this project. 
+
+Build with 'make optimized'.
+
+```
+Usage:
+    markov [-l] [-n number] [-o outfile] infile1 [infile2...]
+    markov -g infile1 -s infile2 [-l -f] [-n number] [-o outfile]
+Where:
+    infile1 [infile2...] are data files containing space separated words
+    [-l] writes a log file to "log.txt" in the current directory
+    [-n number] is number of names to generate
+    [-o outfile] is the file to write the output to
+    -g infile1 -s infile2 are input data for a "Genre species" output
+    [-f] when used with -g -s, prints output as a "First Last" word.
+Example: "markov -n 100 data1.txt data2.txt" will generate 100 random names
+ using data1.txt and data2.txt as input.
+Example: "markov -n 100 -o out.txt -g data1.txt -s data2.txt" will generate 100
+random "Genre species" style names, and write them to "out.txt"
+```
+ 
+--
+
 Markov chain algorithm basically goes like:
 
 1: Parse the list and generate a hash table, where each key is a pair of
@@ -82,5 +107,3 @@ Then "ar" would have a:
 - 1/8 chance of being followed by 'o'
 - 1/8 chance of being followed by 'j'
 
-Check [the blog](https://zwilder.github.io/posts/2023-11-17-markov/) for a more
-detailed description.

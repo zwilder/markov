@@ -76,6 +76,8 @@ struct CList {
 /*****
  * markov_structures.c
  *****/
+// These should each go in their own file, markov_structures.c is way too long
+// Also, HTable/HTList need to be renamed to MHTable/MHTList (markov hash table)
 // Structure creation
 HTNode* create_htnode(char *key, CList *values);
 HTable* create_table(int size);
@@ -120,6 +122,8 @@ HTable* markov_generate_ht(SList *words);
 CList* markov_find_match(char *key, SList *words);
 void string_to_lower(char *str);
 void slist_to_lower(SList *words);
+void string_to_upper(char *str);
+void slist_to_upper(SList *words);
 char markov_find_key_str(char *str, char *key);
 
 // Random name functions

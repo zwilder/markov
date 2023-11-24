@@ -109,10 +109,25 @@ void string_to_lower(char *str) {
     }
 }
 
+void string_to_upper(char *str) {
+    int i = 0;
+    for(i = 0; str[i]; i++) {
+        str[i] = toupper(str[i]);
+    }
+}
+
 void slist_to_lower(SList *words) {
     SList *tmp = words;
     while(tmp) {
         string_to_lower(tmp->data);
+        tmp = tmp->next;
+    }
+}
+
+void slist_to_upper(SList *words) {
+    SList *tmp = words;
+    while(tmp) {
+        string_to_upper(tmp->data);
         tmp = tmp->next;
     }
 }

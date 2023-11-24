@@ -34,11 +34,12 @@ int generate_species(int argc,char **argv) {
     HTable *ht = NULL;
     FILE *f = NULL;
     bool log = false;
+    bool firstlast = false;
     char *gfile = NULL;
     char *sfile = NULL;
     opterr = 0; // Don't show default errors
     optind = 0; // Reset since we are reloading getopt
-    while((c = getopt(argc,argv,"lhn:o:g:s:")) != -1) {
+    while((c = getopt(argc,argv,"flhn:o:g:s:")) != -1) {
         switch(c) {
             case 'l':
                 log = true;
@@ -46,6 +47,9 @@ int generate_species(int argc,char **argv) {
             case 'g':
                 genredat = slist_load_dataset(optarg);
                 gfile = strdup(optarg);
+                break;
+            case 'f':
+                firstlast = true;
                 break;
             case 's':
                 speciesdat = slist_load_dataset(optarg);
@@ -57,6 +61,7 @@ int generate_species(int argc,char **argv) {
             case 'n':
                 n = atoi(optarg);
                 if(n < 1) {
+                    fprintf(stderr, "%d is less than 1.\n",n);
                     print_help();
                     return -1;
                 }
@@ -86,6 +91,7 @@ int generate_species(int argc,char **argv) {
         }
     }
     if(!genredat || !speciesdat) {
+        fprintf(stderr, "Missing genre or species file (-g [genrefile] -s [speciesfile])\n");
         print_help();
         destroy_slist(&genredat);
         destroy_slist(&speciesdat);
@@ -138,6 +144,9 @@ int generate_species(int argc,char **argv) {
         //slist_add(&species, &generate_random_word(ht, NULL));
         slist_push_node(&species, generate_random_word(ht, NULL));
     }
+    if (!firstlast) {
+        slist_to_lower(species);
+    }
     if (log) {
         f = fopen("log.txt","a+");
         fprintf(f,"Hash table from %s:\n",sfile);
@@ -145,7 +154,6 @@ int generate_species(int argc,char **argv) {
         ht_write(ht, "log.txt","a+");
     }
     destroy_htable(ht);
-    slist_to_lower(species);
 
     //Write outf
     if(outf) {
