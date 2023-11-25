@@ -96,6 +96,7 @@ unsigned long mht_hash(char *str);
 void mht_collision(MHTable *table, unsigned long index, MHTNode *item); 
 void mht_insert(MHTable *table, char *key, CList *values);
 CList* mht_search(MHTable *table, char *key);
+MHTNode* mht_search_node(MHTable *ht, char *key);
 void mht_delete(MHTable *table, char *key);
 void mht_print(MHTable *table);
 void mht_write(MHTable *ht, char *fname, char *mode);

@@ -187,6 +187,7 @@ void mht_insert(MHTable *table, char *key, CList *values) {
 }
 
 CList* mht_search(MHTable *table, char *key) {
+    /*
     int index = mht_hash(key);
     MHTNode *item = table->items[index];
     MHTList *head = table->ofbuckets[index];
@@ -199,6 +200,31 @@ CList* mht_search(MHTable *table, char *key) {
         }
         item = head->data;
         head = head->next;
+    }
+    return NULL;
+    */
+    MHTNode *node = mht_search_node(table, key);
+    if(node) {
+        return node->values;
+    } else {
+        return NULL;
+    }
+}
+
+MHTNode* mht_search_node(MHTable *ht, char *key) {
+    // Search the hashtable for a key, making sure to look at overflow buckets
+    int i = mht_hash(key);
+    MHTNode *node = ht->items[i];
+    MHTList *oflist = ht->ofbuckets[i];
+    while(node) {
+        if(strcmp(node->key, key) == 0) {
+            return node;
+        }
+        if(!oflist) {
+            return NULL;
+        }
+        node = oflist->data;
+        oflist = oflist->next;
     }
     return NULL;
 }

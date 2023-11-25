@@ -165,7 +165,7 @@ MHTNode* mht_get_random_node(MHTable *ht) {
         key = key->next;
     }
     if(key) {
-        result = ht->items[mht_hash(key->data)];
+        result = mht_search_node(ht, key->data);
     } else {
         printf("Item %d not found in hash table keys! i = %d.\n", r,i);
         slist_print(ht->keys,'\n');
