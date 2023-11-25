@@ -21,7 +21,7 @@
 /*****
  * Markov chain generator functions
  *****/
-HTable* markov_generate_ht(SList *words) {
+MHTable* markov_generate_mht(SList *words) {
     /* This function does the following:
      * - Open the dataset file (fname)
      * - Read and store strings in SList (words)
@@ -37,7 +37,7 @@ HTable* markov_generate_ht(SList *words) {
      *   = GO to next string in SList
      */
 
-    HTable *ht = create_table(CAPACITY);
+    MHTable *ht = create_mhtable(CAPACITY);
     SList *sit = NULL;
     int i = 0;
     int j = 0;
@@ -60,7 +60,7 @@ HTable* markov_generate_ht(SList *words) {
                 key[j] = sit->data[i+j];
             }
             if(key[KEYSZ-1] == '\0') break;
-            ht_insert(ht, key, markov_find_match(key, words));
+            mht_insert(ht, key, markov_find_match(key, words));
         }
         // Add first KEYSZ letters of word to starter key list
         for(j = 0; j < KEYSZ; j++) {
@@ -156,8 +156,8 @@ CList* markov_find_match(char *key, SList *words) {
 /*****
  * Random name functions
  *****/
-HTNode* ht_get_random_node(HTable *ht) {
-    HTNode *result = NULL;
+MHTNode* mht_get_random_node(MHTable *ht) {
+    MHTNode *result = NULL;
     int r = mt_rand(0,slist_count(ht->stkeys)-1);
     int i = 0;
     SList *key = ht->stkeys;
@@ -165,7 +165,7 @@ HTNode* ht_get_random_node(HTable *ht) {
         key = key->next;
     }
     if(key) {
-        result = ht->items[ht_hash(key->data)];
+        result = ht->items[mht_hash(key->data)];
     } else {
         printf("Item %d not found in hash table keys! i = %d.\n", r,i);
         slist_print(ht->keys,'\n');
@@ -190,7 +190,7 @@ char clist_get_random(CList *cl, int n) {
     return result;
 }
 
-SList* generate_random_word(HTable *ht,char *outf) {
+SList* generate_random_word(MHTable *ht,char *outf) {
     /* Need to:
      * - Choose random element from table to start name (key)
      * - Choose random following character from that value CList
@@ -208,7 +208,7 @@ SList* generate_random_word(HTable *ht,char *outf) {
     FILE *f = NULL;
     int length = mt_rand(ht->wmin, ht->wmax);
     length = ht->wmax;
-    HTNode *tmp = ht_get_random_node(ht);
+    MHTNode *tmp = mht_get_random_node(ht);
     for(i = 0; i < KEYSZ; i++) {
         key[i] = tmp->key[i];
         name[i] = key[i];
@@ -240,7 +240,7 @@ SList* generate_random_word(HTable *ht,char *outf) {
             k = KEYSZ - 1 - j;
             key[j] = name[i-k];
         } 
-        tmp = ht->items[ht_hash(key)];
+        tmp = ht->items[mht_hash(key)];
     }
     if(outf) {
         f = fopen(outf, "a+");

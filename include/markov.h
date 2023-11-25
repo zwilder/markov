@@ -41,20 +41,20 @@ enum {
 /*****
  * Structure definitions
  *****/
-typedef struct HTNode HTNode; // A node containing a string key and a list of chars
-typedef struct HTable HTable; // The hash table
-typedef struct HTList HTList; // List of HTNodes (used for Overflow buckets)
+typedef struct MHTNode MHTNode; // A node containing a string key and a list of chars
+typedef struct MHTable MHTable; // The hash table
+typedef struct MHTList MHTList; // List of MHTNodes (used for Overflow buckets)
 typedef struct CList CList; // List of characters
 
-struct HTNode {
+struct MHTNode {
     char *key;              // Key
     CList *values;          // List of characters
     int nvalues;            // Number of characters in CList
 };
 
-struct HTable {
-    HTNode **items;         // Items in table
-    HTList **ofbuckets;     // Overflow buckets
+struct MHTable {
+    MHTNode **items;         // Items in table
+    MHTList **ofbuckets;     // Overflow buckets
     int size;               // Hash table size
     int count;              // Items in hash table
     SList *keys;            // List of keys for random access
@@ -63,9 +63,9 @@ struct HTable {
     SList *stkeys;          // List of keys at the beginning of words
 };
 
-struct HTList {
-    HTNode *data;
-    HTList *next;
+struct MHTList {
+    MHTNode *data;
+    MHTList *next;
 };
 
 struct CList {
@@ -79,33 +79,33 @@ struct CList {
 // These should each go in their own file, markov_structures.c is way too long
 // Also, HTable/HTList need to be renamed to MHTable/MHTList (markov hash table)
 // Structure creation
-HTNode* create_htnode(char *key, CList *values);
-HTable* create_table(int size);
-HTList** create_ofbuckets(HTable *table);
-HTList* create_htlist(HTNode *item);
+MHTNode* create_mhtnode(char *key, CList *values);
+MHTable* create_mhtable(int size);
+MHTList** create_mht_ofbuckets(MHTable *table);
+MHTList* create_mhtlist(MHTNode *item);
 CList* create_clist_node(char c);
 
 // Structure destruction
-void destroy_htnode(HTNode *item);
-void destroy_htable(HTable *table);
-void destroy_ofbuckets(HTable *table);
-void destroy_htlist(HTList *headref);
+void destroy_mhtnode(MHTNode *item);
+void destroy_mhtable(MHTable *table);
+void destroy_mht_ofbuckets(MHTable *table);
+void destroy_mhtlist(MHTList *headref);
 void destroy_clist_node(CList *node);
 void destroy_clist(CList *headref);
 
-// HTable functions
-unsigned long ht_hash(char *str);
-void ht_collision(HTable *table, unsigned long index, HTNode *item); 
-void ht_insert(HTable *table, char *key, CList *values);
-CList* ht_search(HTable *table, char *key);
-void ht_delete(HTable *table, char *key);
-void ht_print(HTable *table);
-void ht_write(HTable *ht, char *fname, char *mode);
-void ht_print_item(HTable *table, char *key);
+// MHTable functions
+unsigned long mht_hash(char *str);
+void mht_collision(MHTable *table, unsigned long index, MHTNode *item); 
+void mht_insert(MHTable *table, char *key, CList *values);
+CList* mht_search(MHTable *table, char *key);
+void mht_delete(MHTable *table, char *key);
+void mht_print(MHTable *table);
+void mht_write(MHTable *ht, char *fname, char *mode);
+void mht_print_item(MHTable *table, char *key);
 
-// HTList functions
-HTList* htlist_insert(HTList *headref, HTNode *item);
-HTNode* htlist_pop(HTList **headref);
+// MHTList functions
+MHTList* mhtlist_insert(MHTList *headref, MHTNode *item);
+MHTNode* mhtlist_pop(MHTList **headref);
 
 // CList functions
 void clist_push(CList **headref, char c);
@@ -118,7 +118,7 @@ int clist_count(CList *cl);
  * markov_gen.c
  *****/
 // Markov chain generator functions
-HTable* markov_generate_ht(SList *words);
+MHTable* markov_generate_mht(SList *words);
 CList* markov_find_match(char *key, SList *words);
 void string_to_lower(char *str);
 void slist_to_lower(SList *words);
@@ -127,9 +127,9 @@ void slist_to_upper(SList *words);
 char markov_find_key_str(char *str, char *key);
 
 // Random name functions
-HTNode* ht_get_random_node(HTable *ht);
+MHTNode* mht_get_random_node(MHTable *ht);
 char clist_get_random(CList *cl, int n);
-SList* generate_random_word(HTable *ht,char *outf);
+SList* generate_random_word(MHTable *ht,char *outf);
 
 /*****
  * main.c

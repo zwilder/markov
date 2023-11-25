@@ -21,7 +21,7 @@
 
 int main(int argc, char **argv) {
     init_genrand(time(NULL));
-    HTable *ht = NULL;
+    MHTable *ht = NULL;
     int i = 0;
     int n = 10;
     int c = 0;
@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
     }
 
     if(words) {
-        ht = markov_generate_ht(words);
+        ht = markov_generate_mht(words);
         tmp = generate_random_word(ht,outf);
         for(i = 0; i < n; i++) {
             //slist_add(&tmp,&(generate_random_word(ht,outf)));
@@ -109,11 +109,11 @@ int main(int argc, char **argv) {
             }
             fclose(f);
             slist_write(words, ' ', "log.txt", "a+");
-            ht_write(ht, "log.txt", "a+");
+            mht_write(ht, "log.txt", "a+");
         }
         destroy_slist(&tmp);
         destroy_slist(&words);
-        destroy_htable(ht);
+        destroy_mhtable(ht);
     } 
 
     if(outf) {

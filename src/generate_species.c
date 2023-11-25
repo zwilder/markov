@@ -31,7 +31,7 @@ int generate_species(int argc,char **argv) {
     SList *itg = NULL;
     SList *its = NULL;
     char *outf = NULL;
-    HTable *ht = NULL;
+    MHTable *ht = NULL;
     FILE *f = NULL;
     bool log = false;
     bool firstlast = false;
@@ -123,7 +123,7 @@ int generate_species(int argc,char **argv) {
     }
 
     //Generate genre
-    ht = markov_generate_ht(genredat);
+    ht = markov_generate_mht(genredat);
     genre = generate_random_word(ht, NULL);
     for(i = 0; i < n; i++) {
         //slist_add(&genre, &(generate_random_word(ht, NULL)));
@@ -133,12 +133,12 @@ int generate_species(int argc,char **argv) {
         f = fopen("log.txt","a+");
         fprintf(f,"\nHash table from %s:\n",gfile);
         fclose(f);
-        ht_write(ht, "log.txt","a+");
+        mht_write(ht, "log.txt","a+");
     }
-    destroy_htable(ht);
+    destroy_mhtable(ht);
 
     //Generate species
-    ht = markov_generate_ht(speciesdat);
+    ht = markov_generate_mht(speciesdat);
     species = generate_random_word(ht, NULL);
     for(i = 0; i < n; i++) {
         //slist_add(&species, &generate_random_word(ht, NULL));
@@ -151,9 +151,9 @@ int generate_species(int argc,char **argv) {
         f = fopen("log.txt","a+");
         fprintf(f,"Hash table from %s:\n",sfile);
         fclose(f);
-        ht_write(ht, "log.txt","a+");
+        mht_write(ht, "log.txt","a+");
     }
-    destroy_htable(ht);
+    destroy_mhtable(ht);
 
     //Write outf
     if(outf) {

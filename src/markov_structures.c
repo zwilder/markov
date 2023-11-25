@@ -23,8 +23,8 @@
  * Structure creation
  *****/
 
-HTNode* create_htnode(char *key, CList *values) {
-    HTNode *item = malloc(sizeof(HTNode));
+MHTNode* create_mhtnode(char *key, CList *values) {
+    MHTNode *item = malloc(sizeof(MHTNode));
     // Don't forget the \0 at the end of the string!
     item->key = malloc(sizeof(char) * (strlen(key) + 1));
     item->values = values;
@@ -33,17 +33,17 @@ HTNode* create_htnode(char *key, CList *values) {
     return item;
 }
 
-HTable* create_table(int size) {
+MHTable* create_mhtable(int size) {
     int i = 0;
-    HTable *table = malloc(sizeof(HTable));
+    MHTable *table = malloc(sizeof(MHTable));
     table->size = size;
     table->count = 0;
     // Calloc for clean fresh memory?
-    table->items = calloc(table->size, sizeof(HTNode*));
+    table->items = calloc(table->size, sizeof(MHTNode*));
     for(i = 0; i < table->size; i++) {
         table->items[i] = NULL;
     } 
-    table->ofbuckets = create_ofbuckets(table);
+    table->ofbuckets = create_mht_ofbuckets(table);
     table->keys = NULL;
     table->stkeys = NULL;
     table->wmax = 0;
@@ -51,8 +51,8 @@ HTable* create_table(int size) {
     return table;
 }
 
-HTList** create_ofbuckets(HTable *table) {
-    HTList **buckets = calloc(table->size, sizeof(HTList*));
+MHTList** create_mht_ofbuckets(MHTable *table) {
+    MHTList **buckets = calloc(table->size, sizeof(MHTList*));
     int i;
     for(i = 0; i < table->size; i++) {
         buckets[i] = NULL;
@@ -60,8 +60,8 @@ HTList** create_ofbuckets(HTable *table) {
     return buckets;
 }
 
-HTList* create_htlist(HTNode *item) {
-    HTList *list = malloc(sizeof(HTList));
+MHTList* create_mhtlist(MHTNode *item) {
+    MHTList *list = malloc(sizeof(MHTList));
     if(!list) {
         return NULL;
     }
@@ -81,7 +81,7 @@ CList* create_clist_node(char c) {
  * Structure destruction
  *****/
 
-void destroy_htnode(HTNode *item) {
+void destroy_mhtnode(MHTNode *item) {
     if(!item) {
         return;
     }
@@ -90,33 +90,33 @@ void destroy_htnode(HTNode *item) {
     free(item);
 }
 
-void destroy_htable(HTable *table) {
+void destroy_mhtable(MHTable *table) {
     int i = 0;
-    HTNode *item = NULL;
+    MHTNode *item = NULL;
     for(i = 0; i < table->size; i++) {
         item = table->items[i];
         if(item) {
-            destroy_htnode(item);
+            destroy_mhtnode(item);
         }
     }
-    destroy_ofbuckets(table);
+    destroy_mht_ofbuckets(table);
     destroy_slist(&(table->keys));
     destroy_slist(&(table->stkeys));
     free(table->items);
     free(table);
 }
 
-void destroy_ofbuckets(HTable *table) {
-    HTList **buckets = table->ofbuckets;
+void destroy_mht_ofbuckets(MHTable *table) {
+    MHTList **buckets = table->ofbuckets;
     int i;
     for(i = 0; i < table->size; i++) {
-        destroy_htlist(buckets[i]);
+        destroy_mhtlist(buckets[i]);
     }
     free(buckets);
 }
 
-void destroy_htlist(HTList *headref) {
-    HTList *tmp = headref;
+void destroy_mhtlist(MHTList *headref) {
+    MHTList *tmp = headref;
     while(headref) {
         tmp = headref;
         headref = headref->next;
@@ -141,9 +141,9 @@ void destroy_clist(CList *headref) {
 }
 
 /*****
- * HTable functions
+ * MHTable functions
  *****/
-unsigned long ht_hash(char *s) {
+unsigned long mht_hash(char *s) {
     // Hash from K&R, pg 144
     unsigned long hashval;
 
@@ -155,21 +155,21 @@ unsigned long ht_hash(char *s) {
      * otherwise it will access an unbounded memory location SEGFAULT */
 }
 
-void ht_collision(HTable *table, unsigned long index, HTNode *item) { 
-    HTList *head = table->ofbuckets[index];
+void mht_collision(MHTable *table, unsigned long index, MHTNode *item) { 
+    MHTList *head = table->ofbuckets[index];
     if(!head) {
         /* Create the list */
-        head = create_htlist(item);
+        head = create_mhtlist(item);
         table->ofbuckets[index] = head;
     } else {
-        table->ofbuckets[index] = htlist_insert(head, item);
+        table->ofbuckets[index] = mhtlist_insert(head, item);
     }
 }
 
-void ht_insert(HTable *table, char *key, CList *values) {
-    HTNode *item = create_htnode(key,values);
-    int index = ht_hash(key);
-    HTNode *cur = table->items[index];
+void mht_insert(MHTable *table, char *key, CList *values) {
+    MHTNode *item = create_mhtnode(key,values);
+    int index = mht_hash(key);
+    MHTNode *cur = table->items[index];
     CList *vlist = NULL, *ctmp = NULL;
 
     if(!cur) {
@@ -177,7 +177,7 @@ void ht_insert(HTable *table, char *key, CList *values) {
         if(table->count == table->size) {
             /* Hash table full */
             printf("Insert error: Hash table full!\n");
-            destroy_htnode(item);
+            destroy_mhtnode(item);
             return;
         }
         table->items[index] = item;
@@ -199,18 +199,18 @@ void ht_insert(HTable *table, char *key, CList *values) {
                 ctmp = ctmp->next;
             }
             cur->values = vlist;
-            destroy_htnode(item);
+            destroy_mhtnode(item);
         } else {
             /* Different key, handle collision */
-            ht_collision(table, index, item);
+            mht_collision(table, index, item);
         }
     }
 }
 
-CList* ht_search(HTable *table, char *key) {
-    int index = ht_hash(key);
-    HTNode *item = table->items[index];
-    HTList *head = table->ofbuckets[index];
+CList* mht_search(MHTable *table, char *key) {
+    int index = mht_hash(key);
+    MHTNode *item = table->items[index];
+    MHTList *head = table->ofbuckets[index];
     while(item) {
         if(strcmp(item->key, key) == 0) {
             return item->values;
@@ -224,13 +224,13 @@ CList* ht_search(HTable *table, char *key) {
     return NULL;
 }
 
-void ht_delete(HTable *table, char *key) {
-    int index = ht_hash(key);
-    HTNode *item = table->items[index];
-    HTList *head = table->ofbuckets[index];
-    HTList *node = NULL;
-    HTList *cur = NULL;
-    HTList *prev = NULL;
+void mht_delete(MHTable *table, char *key) {
+    int index = mht_hash(key);
+    MHTNode *item = table->items[index];
+    MHTList *head = table->ofbuckets[index];
+    MHTList *node = NULL;
+    MHTList *cur = NULL;
+    MHTList *prev = NULL;
 
     if(!item) {
         /*Item doesn't exist */
@@ -239,7 +239,7 @@ void ht_delete(HTable *table, char *key) {
     if(!head && (strcmp(item->key, key) == 0)) {
         /* No collision chain, remove item set table index to NULL */
         table->items[index] = NULL;
-        destroy_htnode(item);
+        destroy_mhtnode(item);
         slist_delete(&(table->keys),key); // Update key list
         table->count--;
         return;
@@ -247,13 +247,13 @@ void ht_delete(HTable *table, char *key) {
         /* Collision chain exists */
         if(strcmp(item->key, key) == 0) {
             /* Remove this item and set head of list as the new item */
-            destroy_htnode(item);
+            destroy_mhtnode(item);
             node = head;
             head = head->next;
             node->next = NULL;
-            table->items[index] = create_htnode(node->data->key, 
+            table->items[index] = create_mhtnode(node->data->key, 
                     node->data->values);
-            destroy_htlist(node);
+            destroy_mhtlist(node);
             table->ofbuckets[index] = head;
             return;
         }
@@ -263,14 +263,14 @@ void ht_delete(HTable *table, char *key) {
             if(strcmp(cur->data->key, key) == 0) {
                 if(!prev) {
                     /* First element of chain, remove chain */
-                    destroy_htlist(head);
+                    destroy_mhtlist(head);
                     table->ofbuckets[index] = NULL;
                     return;
                 } else {
                     /* Somewhere else in chain */
                     prev->next = cur->next;
                     cur->next = NULL;
-                    destroy_htlist(cur);
+                    destroy_mhtlist(cur);
                     table->ofbuckets[index] = head;
                     return;
                 }
@@ -281,9 +281,9 @@ void ht_delete(HTable *table, char *key) {
     }
 }
 
-void ht_print(HTable *table) {
+void mht_print(MHTable *table) {
     int i = 0;
-    HTList *head = NULL;
+    MHTList *head = NULL;
     printf("\n\t********************\n");
     printf("\tHashTable\n\t********************\n");
     for(i = 0; i < table->size; i++) {
@@ -305,8 +305,8 @@ void ht_print(HTable *table) {
     printf("\t********************\n\n");
 }
 
-void ht_print_item(HTable *table, char *key) {
-    CList *val = ht_search(table, key);
+void mht_print_item(MHTable *table, char *key) {
+    CList *val = mht_search(table, key);
     if(!val) {
         printf("Key: %s does not exist.\n", key);
     } else {
@@ -315,10 +315,10 @@ void ht_print_item(HTable *table, char *key) {
     }
 }
 
-void ht_write(HTable *ht, char *fname, char *mode) {
+void mht_write(MHTable *ht, char *fname, char *mode) {
     int i = 0;
     FILE *f = fopen(fname,mode);
-    HTList *head = NULL;
+    MHTList *head = NULL;
     fprintf(f,"\n\t********************\n");
     fprintf(f, "\tHashTable\n\t********************\n");
     for(i = 0; i < ht->size; i++) {
@@ -341,11 +341,11 @@ void ht_write(HTable *ht, char *fname, char *mode) {
     fclose(f);
 }
 /*****
- * HTList functions
+ * MHTList functions
  *****/
-HTList* htlist_insert(HTList *headref, HTNode *item) {
-    HTList *newnode = create_htlist(item);
-    HTList *tmp = NULL;
+MHTList* mhtlist_insert(MHTList *headref, MHTNode *item) {
+    MHTList *newnode = create_mhtlist(item);
+    MHTList *tmp = NULL;
     if(!headref) {
         headref = newnode;
         return headref;
@@ -362,19 +362,19 @@ HTList* htlist_insert(HTList *headref, HTNode *item) {
     return headref;
 }
 
-HTNode* htlist_pop(HTList **headref) {
+MHTNode* mhtlist_pop(MHTList **headref) {
     if(!(*headref)) {
         return NULL;
     }
     if(!(*headref)->next) {
         return NULL;
     }
-    HTList *node = (*headref)->next;
-    HTList *tmp = *headref;
-    HTNode *item = NULL;
+    MHTList *node = (*headref)->next;
+    MHTList *tmp = *headref;
+    MHTNode *item = NULL;
     tmp->next = NULL;
     *headref = node;
-    memcpy(tmp->data, item, sizeof(HTNode));
+    memcpy(tmp->data, item, sizeof(MHTNode));
     free(tmp->data->key);
     destroy_clist(tmp->data->values);
     free(tmp->data);
@@ -421,7 +421,7 @@ void clist_bracketprint(CList *headref) {
 }
 
 void clist_bracketwrite(CList *headref, FILE *f) {
-    // Helper function for ht_write(...)
+    // Helper function for mht_write(...)
     CList *tmp = headref;
     if(!tmp) {
         fprintf(f,"\n");
