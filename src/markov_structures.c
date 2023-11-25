@@ -112,10 +112,9 @@ void destroy_mhtlist(MHTList *headref) {
     MHTList *tmp = headref;
     while(headref) {
         tmp = headref;
+        //printf("Destroying mhtlist %d, %s.\n",tmp->id,tmp->data->key);
         headref = headref->next;
-        free(tmp->data->key);
-        destroy_clist(tmp->data->values);
-        free(tmp->data);
+        destroy_mhtnode(tmp->data);
         free(tmp);
     }
 }
@@ -324,13 +323,16 @@ void mht_write(MHTable *ht, char *fname, char *mode) {
  * MHTList functions
  *****/
 MHTList* mhtlist_insert(MHTList *headref, MHTNode *item) {
+    // Inserts an item and returns a reference to the head of the list
     MHTList *newnode = create_mhtlist(item);
     MHTList *tmp = NULL;
     if(!headref) {
         headref = newnode;
+        //printf("mhtlist_insert, id %d. Returned as head.\n", newnode->id);
         return headref;
     }else if (!headref->next) {
         headref->next = newnode;
+        //printf("mhtlist_insert, id %d. Returned as %d head->next.\n", newnode->id,headref->id);
         return headref;
     }
     tmp = headref;
@@ -338,7 +340,8 @@ MHTList* mhtlist_insert(MHTList *headref, MHTNode *item) {
         /* Gets last node */
         tmp = tmp->next;
     }
-    tmp->next = newnode;
+    tmp->next->next = newnode;
+    //printf("mhtlist_insert, id %d. returned as %d tmp->next->next.\n", newnode->id,tmp->next->id);
     return headref;
 }
 
