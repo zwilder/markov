@@ -70,13 +70,6 @@ MHTList* create_mhtlist(MHTNode *item) {
     return list;
 }
 
-CList* create_clist_node(char c) {
-    CList *node = malloc(sizeof(CList));
-    node->ch = c;
-    node->next = NULL;
-    return node;
-}
-
 /*****
  * Structure destruction
  *****/
@@ -124,19 +117,6 @@ void destroy_mhtlist(MHTList *headref) {
         destroy_clist(tmp->data->values);
         free(tmp->data);
         free(tmp);
-    }
-}
-
-void destroy_clist_node(CList *node) {
-    free(node);
-}
-
-void destroy_clist(CList *headref) {
-    CList *tmp = headref;
-    while(headref) {
-        tmp = headref;
-        headref = headref->next;
-        destroy_clist_node(tmp);
     }
 }
 
@@ -382,64 +362,3 @@ MHTNode* mhtlist_pop(MHTList **headref) {
     return item;
 }
 
-/*****
- * CList functions
- *****/
-void clist_push(CList **headref, char c) {
-    CList *node = create_clist_node(c);
-    node->next = (*headref);
-    (*headref) = node;
-}
-
-void clist_print(CList *headref) {
-    CList *tmp = headref;
-    int i = 0;
-    printf("CList contains the following:\n");
-    while(tmp) {
-        printf("\t%d) %c\n", i, tmp->ch);
-        i++;
-        tmp = tmp->next;
-    }
-}
-
-void clist_bracketprint(CList *headref) {
-    CList *tmp = headref;
-    if(!tmp) {
-        printf("\n");
-        return;
-    }
-    printf("[");
-    while(tmp) {
-        printf("\'%c\'",tmp->ch);
-        tmp = tmp->next;
-        if(tmp) {
-            printf(",");
-        } else {
-            printf("]\n");
-        }
-    }
-}
-
-void clist_bracketwrite(CList *headref, FILE *f) {
-    // Helper function for mht_write(...)
-    CList *tmp = headref;
-    if(!tmp) {
-        fprintf(f,"\n");
-        return;
-    }
-    fprintf(f,"[");
-    while(tmp) {
-        fprintf(f,"\'%c\'",tmp->ch);
-        tmp = tmp->next;
-        if(tmp) {
-            fprintf(f,",");
-        } else {
-            fprintf(f,"]\n");
-        }
-    }
-}
-
-int clist_count(CList *cl) {
-    if(!cl) return 0;
-    return (clist_count(cl->next) + 1);
-}

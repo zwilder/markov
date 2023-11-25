@@ -27,8 +27,17 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+/*****
+ * Toolbox
+ *****/
 #include <mt19937.h>
 #include <slist.h>
+#include <clist.h>
+
+/*****
+ * Demo program
+ *****/
+#include <markov_demo.h>
 
 /*****
  * Constants
@@ -44,7 +53,6 @@ enum {
 typedef struct MHTNode MHTNode; // A node containing a string key and a list of chars
 typedef struct MHTable MHTable; // The hash table
 typedef struct MHTList MHTList; // List of MHTNodes (used for Overflow buckets)
-typedef struct CList CList; // List of characters
 
 struct MHTNode {
     char *key;              // Key
@@ -68,30 +76,20 @@ struct MHTList {
     MHTList *next;
 };
 
-struct CList {
-    char ch;
-    CList *next;
-};
-
 /*****
  * markov_structures.c
  *****/
-// These should each go in their own file, markov_structures.c is way too long
-// Also, HTable/HTList need to be renamed to MHTable/MHTList (markov hash table)
 // Structure creation
 MHTNode* create_mhtnode(char *key, CList *values);
 MHTable* create_mhtable(int size);
 MHTList** create_mht_ofbuckets(MHTable *table);
 MHTList* create_mhtlist(MHTNode *item);
-CList* create_clist_node(char c);
 
 // Structure destruction
 void destroy_mhtnode(MHTNode *item);
 void destroy_mhtable(MHTable *table);
 void destroy_mht_ofbuckets(MHTable *table);
 void destroy_mhtlist(MHTList *headref);
-void destroy_clist_node(CList *node);
-void destroy_clist(CList *headref);
 
 // MHTable functions
 unsigned long mht_hash(char *str);
@@ -106,13 +104,6 @@ void mht_print_item(MHTable *table, char *key);
 // MHTList functions
 MHTList* mhtlist_insert(MHTList *headref, MHTNode *item);
 MHTNode* mhtlist_pop(MHTList **headref);
-
-// CList functions
-void clist_push(CList **headref, char c);
-void clist_print(CList *headref);
-void clist_bracketprint(CList *headref);
-void clist_bracketwrite(CList *headref, FILE *f);
-int clist_count(CList *cl);
 
 /*****
  * markov_gen.c
@@ -130,16 +121,5 @@ char markov_find_key_str(char *str, char *key);
 MHTNode* mht_get_random_node(MHTable *ht);
 char clist_get_random(CList *cl, int n);
 SList* generate_random_word(MHTable *ht,char *outf);
-
-/*****
- * main.c
- *****/
-void print_help(void);
-void log_separator(FILE *f);
-
-/*****
- * generate_species.c
- *****/
-int generate_species(int argc,char **argv);
 
 #endif //MARKOV_H

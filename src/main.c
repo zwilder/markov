@@ -124,24 +124,3 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-void log_separator(FILE *f) {
-    int i = 0;
-    for(i=0; i < 20; i++) {
-        fprintf(f,"*~");
-    }
-}
-
-void print_help(void) {
-    printf("Usage:\n\tmarkov [-l] [-n number] [-o outfile] infile1 [infile2...]\n");
-    printf("\tmarkov -g infile1 -s infile2 [-l -f] [-n number] [-o outfile]\n");
-    printf("Where:\n\tinfile1 [infile2...] are data files containing space separated words\n");
-    printf("\t[-l] writes a log file to \"log.txt\" in the current directory\n");
-    printf("\t[-n number] is number of names to generate\n");
-    printf("\t[-o outfile] is the file to write the output to\n");
-    printf("\t-g infile1 -s infile2 are input data for a \"Genre species\" output\n");
-    printf("\t[-f] when used with -g -s, prints output as a \"First Last\" word.\n");
-    printf("Example: \"markov -n 100 data1.txt data2.txt\" ");
-    printf("will generate 100 random names\n using data1.txt and data2.txt as input.\n");
-    printf("Example: \"markov -n 100 -o out.txt -g data1.txt -s data2.txt\" ");
-    printf("will generate 100 random \"Genre species\" style names, and write them to \"out.txt\"\n");
-}
